@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*", // Intercept calls to /api
-        destination: "http://localhost:5000", // Forward them to backend
+        destination: "http://localhost:5000/api/:path*", // Forward them to backend
       },
     ];
   },

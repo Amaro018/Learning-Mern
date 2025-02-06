@@ -7,6 +7,7 @@ import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
 
 const style = {
   position: "absolute",
@@ -20,7 +21,6 @@ const style = {
   p: 4,
 };
 
-// Define the type for form state
 interface NoteForm {
   title: string;
   description: string;
@@ -29,10 +29,21 @@ interface NoteForm {
 export default function Note() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
   const [open, setOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [currentNoteId, setCurrentNoteId] = useState<string | null>(null);
   const [form, setForm] = useState<NoteForm>({ title: "", description: "" });
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => {
+    setEditMode(false);
+    setForm({ title: "", description: "" });
+    setOpen(true);
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+    setEditMode(false);
+    setCurrentNoteId(null);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,23 +51,40 @@ export default function Note() {
 
   const handleSubmit = async () => {
     try {
-      const newNote = await NotesApi.createNote(form);
-      setNotes((prevNotes) => [...prevNotes, newNote]); // Update state with new note
-      setForm({ title: "", description: "" }); // Reset form fields
+      if (editMode && currentNoteId) {
+        // Update note
+        const updatedNote = await NotesApi.updateNote(currentNoteId, form);
+        setNotes((prevNotes) =>
+          prevNotes.map((note) =>
+            note._id.toString() === currentNoteId ? updatedNote : note
+          )
+        );
+      } else {
+        // Create new note
+        const newNote = await NotesApi.createNote(form);
+        setNotes((prevNotes) => [...prevNotes, newNote]);
+      }
+      setForm({ title: "", description: "" });
       handleClose();
     } catch (error) {
-      console.error("Error creating note:", error);
+      console.error("Error saving note:", error);
     }
   };
 
   const handleDelete = async (noteId: string) => {
     try {
       await NotesApi.deleteNote(noteId);
-      console.log(noteId)
       setNotes((prevNotes) => prevNotes.filter((note) => note._id.toString() !== noteId));
     } catch (error) {
       console.error("Error deleting note:", error);
     }
+  };
+
+  const handleEdit = (note: NoteModel) => {
+    setEditMode(true);
+    setCurrentNoteId(note._id.toString());
+    setForm({ title: note.title, description: note.description });
+    setOpen(true);
   };
 
   useEffect(() => {
@@ -87,7 +115,7 @@ export default function Note() {
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           onClick={handleOpen}
         >
-          Add Notes
+          Add Note
         </button>
       </div>
 
@@ -95,10 +123,15 @@ export default function Note() {
         {notes.map((note) => (
           <div key={note._id} className="bg-gray-200 p-4 w-1/4">
             <div className="flex flex-row justify-between">
-            <h2 className="text-lg font-bold">{note.title}</h2>
-            <button onClick={() => handleDelete(note._id.toString())}>
-            <DeleteOutlineIcon/>
-            </button>
+              <h2 className="text-lg font-bold">{note.title}</h2>
+              <div className="flex gap-2">
+                <button onClick={() => handleEdit(note)}>
+                  <EditIcon />
+                </button>
+                <button onClick={() => handleDelete(note._id.toString())}>
+                  <DeleteOutlineIcon />
+                </button>
+              </div>
             </div>
             <p>Description: {note.description}</p>
             <p>{formatDate(note.createdAt.toString())}</p>
@@ -112,7 +145,7 @@ export default function Note() {
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <p className="text-2xl font-bold uppercase">Add a new notes</p>
+            <p className="text-2xl font-bold uppercase">{editMode ? "Edit Note" : "Add a new Note"}</p>
             <div className="flex flex-col gap-2">
               <TextField
                 required
@@ -137,9 +170,9 @@ export default function Note() {
             </div>
             <button
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
-              onClick={handleSubmit}
+              onClick={handleSubmit} disabled={!editMode}
             >
-              Save Note
+              {editMode ? "Update Note" : "Save Note"}
             </button>
           </Box>
         </Modal>
