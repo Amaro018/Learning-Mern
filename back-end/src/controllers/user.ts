@@ -3,6 +3,22 @@ import createHttpError from "http-errors";
 import UserModel from "../models/users";
 import bcrypt from "bcrypt";
 
+
+
+export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
+    const authenticatedUserId = req.session.userId;
+    try {
+        if(!authenticatedUserId) {
+            throw createHttpError(401, "User not authenticated");
+        }
+        const user = await UserModel.findById(authenticatedUserId).select("+email").exec();
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+} 
+
+
 interface SignUpBody {
     username: string,
     email: string,
@@ -83,4 +99,14 @@ export const login: RequestHandler<unknown, unknown, LoginBody, unknown> = async
     } catch (error) {
         next(error);
     }
+};
+
+export const logout: RequestHandler = (req, res, next) => {
+    req.session.destroy((err) => {
+        if(err) {
+            next(err);
+        } else {
+            res.status(200).json({message: "Logout successful"});
+        }
+    });
 };
