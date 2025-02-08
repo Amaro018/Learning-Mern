@@ -2,10 +2,12 @@
 import React, { useState } from "react";
 import * as NotesApi from "../../network/notes_api";
 import { LoginCredentials } from "../../network/notes_api";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [form, setForm] = useState<LoginCredentials>({ username: "", password: "" });
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,6 +18,7 @@ export default function LoginForm() {
     try {
       const user = await NotesApi.login(form);
       console.log("User logged in successfully:", user);
+      router.push("/dashboard");
     } catch (error) {
       console.error("Error logging in:", error);
       setError("Error logging in. Please try again.");

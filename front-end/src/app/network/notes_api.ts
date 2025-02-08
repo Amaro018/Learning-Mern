@@ -3,18 +3,15 @@ import { User } from "../models/user";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
     const response = await fetch(input, init);
-
+    console.log(response);
     if (response.ok) {
-        const text = await response.text();
-        console.log(text);
-        return text ? JSON.parse(text) : null; // Prevents "Unexpected end of JSON input"
+        return response;
+
     } else {
-        try {
-            const errorBody = await response.json();
-            throw new Error(errorBody.error || "Unknown error");
-        } catch {
-            throw new Error("Failed to parse error message");
-        }
+        const errorBody = await response.json();
+        const errorMessage = new Error(errorBody.error);
+        throw errorMessage;
+        
     }
 }
 
@@ -27,12 +24,12 @@ export interface SignUpCredentials {
 
 export async function getUser(): Promise<User> {
     const response = await fetchData("/api/users", {method: "GET"});
-    return response;
+    return response.json();
 }
 
 export async function signUp(credentials: SignUpCredentials): Promise<User> {
     const response = await fetchData("/api/users/signup", {method: "POST", body: JSON.stringify(credentials), headers: {"Content-Type": "application/json"}});
-    return response;
+    return response.json();
 }
 
 export interface LoginCredentials {
@@ -41,8 +38,8 @@ export interface LoginCredentials {
 }
 
 export async function login(credentials: LoginCredentials): Promise<User> {
-    const response = await fetchData("/api/users/login", {method: "POST", body: JSON.stringify(credentials), headers: {"Content-Type": "application/json"}});
-    return response;
+    const response = await fetchData("/api/users/login", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(credentials)});
+    return response.json();
 }
 
 export async function logout() {
@@ -52,7 +49,7 @@ export async function logout() {
 
 export async function fetchNotes(): Promise<Note[]> {
     const response = await fetchData("/api/notes", {method: "GET"});
-    return response;
+    return response.json();
 }
 
 
@@ -63,13 +60,13 @@ export interface NoteInput {
 
 export async function createNote(note: NoteInput): Promise<Note> {
     const response = await fetchData("/api/notes", {method: "POST", body: JSON.stringify(note), headers: {"Content-Type": "application/json"}});
-    return response;
+    return response.json();
 }
 
 
 export async function updateNote(noteId: string, note: NoteInput): Promise<Note> {
     const response = await fetchData(`/api/notes/${noteId}`, {method: "PATCH", body: JSON.stringify(note), headers: {"Content-Type": "application/json"}});
-    return response;
+    return response.json();
 }
 
 export async function deleteNote(noteId: string){
