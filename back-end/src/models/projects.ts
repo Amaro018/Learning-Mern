@@ -1,6 +1,6 @@
 import { InferSchemaType, model, Schema } from "mongoose";
 
-const notesSchema = new Schema({
+const projectsSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -17,6 +17,6 @@ const notesSchema = new Schema({
 
 }, { timestamps: true });
 
-type Note = InferSchemaType<typeof notesSchema>
+type Project = InferSchemaType<typeof projectsSchema>
 
-export default model<Note>("Note", notesSchema);
+export default model<Project>("Projects", projectsSchema);

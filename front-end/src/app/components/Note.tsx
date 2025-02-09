@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
+import { User } from "../models/user";
 
 const style = {
   position: "absolute",
@@ -32,6 +33,8 @@ export default function Note() {
   const [editMode, setEditMode] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState<string | null>(null);
   const [form, setForm] = useState<NoteForm>({ title: "", description: "" });
+
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const handleOpen = () => {
     setEditMode(false);
@@ -106,6 +109,7 @@ export default function Note() {
       day: "2-digit",
     }).format(new Date(dateString));
   };
+
 
   return (
     <div className="p-16">
