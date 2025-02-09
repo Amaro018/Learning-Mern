@@ -18,8 +18,9 @@ export default function NavBar() {
         const user = await notesApi.getUser();
         setCurrentUser(user);
       } catch (error) {
+        
         // Ignore errors when fetching user
-        console.warn("Ignoring error when fetching user:", error);
+        console.log("Ignoring error when fetching user:", error);
       }
      }
      fetchUser();
