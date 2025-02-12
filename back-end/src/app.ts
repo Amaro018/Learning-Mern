@@ -10,7 +10,7 @@ import session from "express-session";
 import validateEnv from "./util/validateEnv";
 import MongoStore from "connect-mongo";
 import projectsRoutes from "./routes/projects";
-import cors from "cors";
+// import cors from "cors";
 
 const app = express();
 
@@ -20,13 +20,13 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use(
-    cors({
-        origin: "http://localhost:3000", // Allow sending cookies from frontend to backend
-        credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE"], // Allow requests from the specified frontend origin
-    })
-  );
+// app.use(
+//     cors({
+//         origin: "http://localhost:3000", // Allow sending cookies from frontend to backend
+//         credentials: true,
+//         methods: ["GET", "POST", "PUT", "DELETE"], // Allow requests from the specified frontend origin
+//     })
+//   );
 
 app.use(session({
     secret: validateEnv.SESSION_SECRET,

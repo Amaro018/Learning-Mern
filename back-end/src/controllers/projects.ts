@@ -4,24 +4,16 @@ import createHttpError from "http-errors";
 import mongoose from "mongoose";
 import { assertIsDefined } from "../util/assertIsDefined";
 
-
-
-
-
 export const getProjects: RequestHandler = async (req, res, next) => {
+    // const authenticatedUserId = req.session.userId;
     try {
-        const { page = 1, limit = 10 } = req.query; // Default: page 1, 10 results
-        const projects = await ProjectModel.find()
-            .limit(Number(limit))
-            .skip((Number(page) - 1) * Number(limit))
-            .exec();
-        
+       
+        const projects = await ProjectModel.find().exec();
         res.status(200).json(projects);
     } catch (error) {
         next(error);
-    }
+    }    
 };
-
 
 export const getProject: RequestHandler = async (req, res, next) => {
     const projectId = req.params.projectId;

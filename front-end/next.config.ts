@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*", // Intercept calls to /api
-        destination: "https://learning-mern-five.vercel.app/api/:path*", // Forward them to backend
+        destination: "http://localhost:5000/api/:path*", // Forward them to backend
       },
     ];
   },
