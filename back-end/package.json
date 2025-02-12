@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nodemon src/server.ts",
     "lint": "eslint . --ext .ts",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "vercel-build": "echo hello welcome to your backend api"
   },
