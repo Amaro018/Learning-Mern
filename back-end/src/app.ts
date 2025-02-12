@@ -30,6 +30,10 @@ app.use(session({
     })
 }));
 
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+})
+
 app.use("/api/users", userRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/projects", projectsRoutes);
