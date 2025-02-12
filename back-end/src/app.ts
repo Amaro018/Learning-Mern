@@ -18,6 +18,8 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
+app.use(express.urlencoded({ extended: false }));
+
 app.use(
     cors({
         origin: "http://localhost:3000", // Allow sending cookies from frontend to backend
