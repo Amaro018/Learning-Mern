@@ -10,12 +10,20 @@ import session from "express-session";
 import validateEnv from "./util/validateEnv";
 import MongoStore from "connect-mongo";
 import projectsRoutes from "./routes/projects";
+import cors from "cors";
 
 const app = express();
 
 app.use(morgan("dev"));
 
 app.use(express.json());
+
+app.use(
+    cors({
+      credentials: true, // Allow requests from the specified frontend origin
+      origin: "http://localhost:3000", // Allow sending cookies from frontend to backend
+    })
+  );
 
 app.use(session({
     secret: validateEnv.SESSION_SECRET,
