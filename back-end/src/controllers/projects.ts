@@ -17,10 +17,10 @@ export const getProjects: RequestHandler = async (req, res, next) => {
 
 export const getProject: RequestHandler = async (req, res, next) => {
     const projectId = req.params.projectId;
-    const authenticatedUserId = req.session.userId;
+    // const authenticatedUserId = req.session.userId;
 
     try {
-        assertIsDefined(authenticatedUserId);
+        // assertIsDefined(authenticatedUserId);
         if (!mongoose.isValidObjectId(projectId)) {
             throw createHttpError(400, "Invalid note ID");
         }
@@ -31,9 +31,9 @@ export const getProject: RequestHandler = async (req, res, next) => {
             throw createHttpError(404, "Note not found");
         }
 
-        if (!project.userId.equals(authenticatedUserId)) {
-            throw createHttpError(403, "You do not have permission to access this note");
-        }
+        // if (!project.userId.equals(authenticatedUserId)) {
+        //     throw createHttpError(403, "You do not have permission to access this note");
+        // }
 
         res.status(200).json(project);
     } catch (error) {
