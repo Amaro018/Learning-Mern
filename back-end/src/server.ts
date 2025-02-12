@@ -7,7 +7,7 @@ const port = env.PORT || 5000;
 
 const mongoUri = env.MONGO_CONNECTION_STRING
 
-mongoose.connect(mongoUri!,{ ssl: true, tlsAllowInvalidCertificates: true,} ).then(() => {
+mongoose.connect(mongoUri! ).then(() => {
     
     console.log("Connected to MongoDB")
     app.listen(port, () => {
