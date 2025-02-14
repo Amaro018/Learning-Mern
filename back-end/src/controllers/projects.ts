@@ -7,7 +7,6 @@ import { assertIsDefined } from "../util/assertIsDefined";
 export const getProjects: RequestHandler = async (req, res, next) => {
     // const authenticatedUserId = req.session.userId;
     try {
-       
         const projects = await ProjectModel.find().exec();
         res.status(200).json(projects);
     } catch (error) {
