@@ -42,6 +42,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/notes", notesRoutes);
 app.use("/api/projects", projectsRoutes);
+
 app.use((req, res, next) => {
    next(createHttpError(404, "END POINT NOT FOUND"));
 });
