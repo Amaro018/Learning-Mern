@@ -1,9 +1,4 @@
 "use client";
-
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import FolderCopyIcon from "@mui/icons-material/FolderCopy";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import Link from "next/link";
 import * as userApi from "../network/notes_api";
 import { useEffect, useState } from "react";
 import { User } from "../models/user";

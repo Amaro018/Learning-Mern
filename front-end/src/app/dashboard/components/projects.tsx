@@ -205,7 +205,7 @@ export default function Projects() {
                     <div className="flex gap-2 mt-4">
                         {previews.slice(0, 3).map((src, index) => (
                             <div key={index} className="w-24 h-24 rounded-lg overflow-hidden">
-                                <img src={src} alt="Preview" className="w-full h-full object-cover" />
+                                <Image src={src} alt="Preview" className="w-full h-full object-cover" />
                             </div>
                         ))}
                         {previews.length > 3 && (
