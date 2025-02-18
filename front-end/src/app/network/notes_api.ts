@@ -1,4 +1,6 @@
+import { stringify } from "querystring";
 import { Note } from "../models/note";
+import { Project } from "../models/project";
 import { User } from "../models/user";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
@@ -72,3 +74,36 @@ export async function updateNote(noteId: string, note: NoteInput): Promise<Note>
 export async function deleteNote(noteId: string){
     await fetchData(`/api/notes/${noteId}`, {method: "DELETE"});
 }
+
+
+export async function fetchProjects(): Promise<Project[]> {
+    const response = await fetchData("/api/projects", {method: "GET"});
+    return response.json();
+}
+
+
+
+
+
+export const createProject = async (formData: FormData) => {
+    try {
+        console.log("📤 Sending FormData:", Object.fromEntries(formData.entries())); // Debug what is being sent
+
+        const response = await fetch("/api/projects", {
+            method: "POST",
+            body: formData,
+        });
+
+
+        const data = await response.json();
+        console.log("📥 Received data:", data);
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to create project");
+        }
+
+        return data;
+    } catch (error) {
+        console.error("❌ Error creating project:", error);
+        throw error;
+    }
+};

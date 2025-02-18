@@ -53,6 +53,9 @@ export default function NavBar() {
                                     Logged in as: {currentUser.username}
                                 </p>
                             </li>
+                            <Link href="/dashboard">
+                                <li>Dashboard</li>
+                            </Link>
                             <li>
                                <button onClick={handleLogout}>
                                     logout
