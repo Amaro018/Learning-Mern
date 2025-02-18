@@ -47,6 +47,7 @@ export default function NavBar() {
                     {currentUser ? (
                         <>
                             <p>Logged in as: {currentUser.username}</p>
+                            <Link href="/" className="hover:text-stone-800">Home</Link>
                             <Link href="/dashboard" className="hover:text-stone-800">Dashboard</Link>
                             <button 
                                 onClick={handleLogout} 
@@ -57,7 +58,8 @@ export default function NavBar() {
                         </>
                     ) : (
                         <>
-                            <Link href="/signup" className="hover:text-stone-800">Sign Up</Link>
+
+                            <Link href="/" className="hover:text-stone-800">Home</Link>
                             <Link href="/login" className="hover:text-stone-800">Login</Link>
                         </>
                     )}
