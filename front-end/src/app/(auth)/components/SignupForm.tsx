@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { User } from "../../models/user";
 import { SignUpCredentials } from "../../network/notes_api";
 import * as NotesApi from "../../network/notes_api";
 
