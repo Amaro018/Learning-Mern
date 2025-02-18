@@ -4,7 +4,6 @@ import { Project as ProjectModel } from "../../models/project";
 import * as ProjectsApi from "../../network/notes_api";
 import { useEffect, useState } from "react";
 import { Box, Modal, Typography, TextField } from "@mui/material";
-import { createProject } from "../../network/notes_api";
 
 const style = {
     position: "absolute",
@@ -24,15 +23,12 @@ export default function Projects() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    interface ProjectForm {
-        title: string;
-        description: string;
-        materials: { name: string; description: string; size: string; color: string; quantity: number }[];
-        files: File[];
-      }
-
-       const [form, setForm] = useState<ProjectForm>({ title: "", description: "", materials: [], files: [] });
-
+    const [form, setForm] = useState({
+        title: "",
+        description: "",
+        materials: [{ name: "", description: "", size: "", color: "", quantity: 0 }],
+        images: []
+    });
 
     const [images, setImages] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
@@ -41,22 +37,25 @@ export default function Projects() {
     const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>, index?: number) => {
         const { name, value } = event.target;
         if (index === undefined) {
-            setForm({ ...form, [name]: value });
+          setForm({ ...form, [name]: value });
         } else {
-            const updatedMaterials = [...form.materials];
-            updatedMaterials[index] = { ...updatedMaterials[index], [name]: value };
-            setForm({ ...form, materials: updatedMaterials });
+          const updatedMaterials = [...form.materials];
+          updatedMaterials[index] = { ...updatedMaterials[index], [name]: value };
+          setForm({ ...form, materials: updatedMaterials });
         }
-    };
+      };
 
-    // Add new material input fields
-    const handleAddMaterial = () => {
-        setForm({
-            ...form,
-            materials: [...form.materials, { name: "", description: "", size: "", color: "", quantity: 0 }],
-        });
-    };
 
+
+  const handleAddMaterial = () => {
+    setForm({
+      ...form,
+      materials: [
+        ...form.materials,
+        { name: "", description: "", size: "", color: "", quantity: 0 },
+      ],
+    });
+  };
     // Handle image selection and preview
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
@@ -67,49 +66,44 @@ export default function Projects() {
         }
     };
 
+    // Function to create a new project with images
     const handleCreateProject = async () => {
-        const formData = new FormData();
-        
-        // Add form fields to FormData
-        formData.append("title", form.title);
-        formData.append("description", form.description);
-        
-        images.forEach((image) => {
-            formData.append("files", image);  // Correctly append multiple files
-        });
-    
-        formData.append("materials", JSON.stringify(form.materials));  // Ensure it's a valid JSON string
-    
-        // Debugging FormData
-        console.log("📤 FormData Debugging (Before Sending):");
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
+      const formData = new FormData();
+      formData.append("title", form.title);
+      if (form.description) formData.append("description", form.description);
+      if (form.materials) formData.append("materials", JSON.stringify(form.materials));
 
-        console.log('----')
-        console.log(formData)
-    
-        try {
-            await createProject(formData);
-        } catch (error) {
-            console.error("❌ Failed to create project:", error);
-        }
-    };
-    
-    
-    
+      images.forEach((image) => {
+          formData.append("images", image);
+      });
 
-    // Fetch projects from API
-    const loadProjects = async () => {
-        try {
-            const data = await ProjectsApi.fetchProjects();
-            setProjects(data as ProjectModel[]);
-        } catch (error) {
-            console.error("Error fetching projects:", error);
-        }
+      console.log(form, images)
+
+      try {
+          const response = await ProjectsApi.createProject(form, images);
+          console.log("Project created successfully:", response);
+          handleClose();
+          setProjects([...projects, response]);
+          setForm({
+              title: "",
+              description: "",
+              materials: [{ name: "", description: "", size: "", color: "", quantity: 0 }],
+              images: []
+          })
+      } catch (error) {
+          console.error("Failed to create project:", error);
+      }
     };
 
     useEffect(() => {
+        async function loadProjects() {
+            try {
+                const data = await ProjectsApi.fetchProjects();
+                setProjects(data as ProjectModel[]);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        }
         loadProjects();
     }, []);
 
@@ -122,52 +116,87 @@ export default function Projects() {
                         Add Project
                     </button>
                 </div>
-
+              <div className="flex flex-wrap py-4">
                 {/* Project List */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {projects.map((project) => (
-                        <div key={project._id} className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105">
-                            <Image
-                                src={project.images && project.images.length > 0 ? project.images[0] : "/placeholder.svg"}
-                                alt={project.title}
-                                width={400}
-                                height={300}
-                                className="w-full h-48 object-cover"
-                            />
+                {projects.map(project => (
+                    <div key={project._id} className="w-full sm:w-1/2 lg:w-1/3 px-2 mb-4">
+                        <div className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 h-full">
+                            <Image src={project.images[0] ? project.images[0].toString() : ""} alt={project.title} width={400} height={300} className="w-full h-48 object-cover" />
                             <div className="p-4">
-                                <h2 className="text-xl font-semibold">{project.title}</h2>
-                                <p className="text-gray-600">{project.description}</p>
+                                <h2 className="text-xl font-semibold mb-2">{project.title}</h2>
                             </div>
                         </div>
-                    ))}
+                    </div>
+                ))}
                 </div>
             </div>
 
             {/* Add Project Modal */}
             <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" sx={{ overflowY: "scroll", height: "100vh" }}>
                 <Box sx={style}>
-                    <Typography variant="h6" sx={{ marginBottom: 2 }}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ marginBottom: 2 }}>
                         Adding New Project
                     </Typography>
                     <TextField required label="Project Title" fullWidth name="title" value={form.title} onChange={handleFormChange} sx={{ marginBottom: 2 }} />
                     <TextField required label="Project Description" fullWidth name="description" value={form.description} onChange={handleFormChange} sx={{ marginBottom: 2 }} />
+                      {/* Dynamically Render Materials Input Fields */}
+        {form.materials.map((material, index) => (
+          <div key={index}>
+            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+              Material {index + 1}
+            </Typography>
+            <TextField
+              label="Material Title"
+              fullWidth
+              name="name"
+              value={material.name}
+              onChange={(e) => handleFormChange(e, index)}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Material Description"
+              fullWidth
+              name="description"
+              value={material.description}
+              onChange={(e) => handleFormChange(e, index)}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Material Size"
+              fullWidth
+              name="size"
+              value={material.size}
+              onChange={(e) => handleFormChange(e, index)}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Material Color"
+              fullWidth
+              name="color"
+              value={material.color}
+              onChange={(e) => handleFormChange(e, index)}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              label="Material Quantity"
+              fullWidth
+              name="quantity"
+              type="number"
+              value={material.quantity}
+              onChange={(e) => handleFormChange(e, index)}
+              sx={{ marginBottom: 2 }}
+            />
+          </div>
+        ))}
 
-                    {/* Dynamically Render Materials Input Fields */}
-                    {form.materials.map((material, index) => (
-                        <div key={index} className="mb-4">
-                            <Typography variant="subtitle1">Material {index + 1}</Typography>
-                            <TextField label="Material Title" fullWidth name="name" value={material.name} onChange={(e) => handleFormChange(e, index)} sx={{ marginBottom: 2 }} />
-                            <TextField label="Material Description" fullWidth name="description" value={material.description} onChange={(e) => handleFormChange(e, index)} sx={{ marginBottom: 2 }} />
-                            <TextField label="Material Size" fullWidth name="size" value={material.size} onChange={(e) => handleFormChange(e, index)} sx={{ marginBottom: 2 }} />
-                            <TextField label="Material Color" fullWidth name="color" value={material.color} onChange={(e) => handleFormChange(e, index)} sx={{ marginBottom: 2 }} />
-                            <TextField label="Material Quantity" fullWidth name="quantity" type="number" value={material.quantity} onChange={(e) => handleFormChange(e, index)} sx={{ marginBottom: 2 }} />
-                        </div>
-                    ))}
-
-                    {/* Button to Add More Materials */}
-                    <button onClick={handleAddMaterial} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mb-4">
-                        Add More Material
-                    </button>
+                {/* Button to Add More Materials */}
+                <button
+          type="button"
+          onClick={handleAddMaterial}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+        >
+          Add More Material
+        </button>
 
                     {/* Image Upload Input */}
                     <input type="file" accept="image/*" multiple onChange={handleImageChange} className="mb-4" />
@@ -179,6 +208,11 @@ export default function Projects() {
                                 <img src={src} alt="Preview" className="w-full h-full object-cover" />
                             </div>
                         ))}
+                        {previews.length > 3 && (
+                            <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-lg text-xl font-bold">
+                                +{previews.length - 3}
+                            </div>
+                        )}
                     </div>
 
                     <button className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded mt-4" onClick={handleCreateProject}>

@@ -1,6 +1,5 @@
-import { stringify } from "querystring";
 import { Note } from "../models/note";
-import { Project } from "../models/project";
+import { Material, Project } from "../models/project";
 import { User } from "../models/user";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
@@ -83,27 +82,62 @@ export async function fetchProjects(): Promise<Project[]> {
 
 
 
+// export async function createProject(project: ProjectInput, images: File[]): Promise<Project> {
+//     console.log("Creating project with form:", project);
+//     console.log("sending Images:", images);
+//     const formData = new FormData();
+
+//     // Append text fields
+    
+//     formData.append("title", project.title);
+//     if (project.description) formData.append("description", project.description);
+//     if (project.materials) formData.append("materials", JSON.stringify(project.materials));
+
+//     // Append images
+//     images.forEach((image) => formData.append("images", image));
+
+//     // Make API call
+//     const response = await fetchData("/api/projects", {
+//         method: "POST",
+//         body: formData, // Use FormData
+//     });
+
+//     if (!response.ok) throw new Error("Failed to create project");
 
 
-export const createProject = async (formData: FormData) => {
+//     return response.json();
+// }
+
+export interface ProjectInput {
+    title: string;
+    description?: string;
+    materials?: Material[];
+}
+export const createProject = async (form: ProjectInput, images: File[]) => {
+    const formData = new FormData();
+
+    // Append text fields
+    formData.append("title", form.title);
+    if (form.description) formData.append("description", form.description);
+    if (form.materials) formData.append("materials", JSON.stringify(form.materials));
+
+    // Append images
+    images.forEach((image) => formData.append("images", image));
+
     try {
-        console.log("📤 Sending FormData:", Object.fromEntries(formData.entries())); // Debug what is being sent
-
-        const response = await fetch("/api/projects", {
+        const response = await fetchData("/api/projects", {
             method: "POST",
             body: formData,
+            credentials: "include", // To send cookies/session
         });
 
-
-        const data = await response.json();
-        console.log("📥 Received data:", data);
         if (!response.ok) {
-            throw new Error(data.message || "Failed to create project");
+            throw new Error(`Error: ${response.status}`);
         }
 
-        return data;
+        return await response.json();
     } catch (error) {
-        console.error("❌ Error creating project:", error);
+        console.error("Error creating project:", error);
         throw error;
     }
 };

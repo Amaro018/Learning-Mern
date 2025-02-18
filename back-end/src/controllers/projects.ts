@@ -66,12 +66,6 @@ interface Material {
     quantity: number;
 }
 
-interface CreateProjectBody {
-    title: string;
-    description?: string;
-    images?: string[];
-    materials?: Material[];
-}
 
 // export const createProject: RequestHandler<unknown, unknown, CreateProjectBody> = async (req, res, next) => {
 //     try {
@@ -97,9 +91,17 @@ interface CreateProjectBody {
 //         next(error);
 //     }
 // };
+
+interface CreateProjectBody {
+    title: string;
+    description?: string;
+    images?: string[];
+    materials?: Material[];
+}
+
 export const createProject: RequestHandler<unknown, unknown, CreateProjectBody> = async (req, res, next) => {
-    console.log("Received body:", req.body);  // Log the body of the request
-    console.log("Received files:", req.files);  // Log the files attached to the request
+    console.log('Received body:', req.body);
+    console.log('Content-Type:', req.headers['content-type']);
 
     try {
         assertIsDefined(req.session.userId);

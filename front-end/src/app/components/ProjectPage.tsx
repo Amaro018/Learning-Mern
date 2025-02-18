@@ -22,28 +22,27 @@ export default function ProjectPage() {
 
 
     return (
-        <div className="px-24 py-8 bg-stone-300">
-            <h1>Project Page</h1>
+        <div className="py-8  bg-stone-300">
+            <h1 className="text-2xl font-bold text-center">List of my Projects</h1>
+            <div className="flex flex-wrap justify-center gap-4 py-8">
             {projects.map((project) => (
-                <div key={project._id}>
-                    <h2>{project.title}</h2>
-                    <p>{project.description}</p>
-                    <div className="relative w-[600px] h-[800px]">
-                    {project.images.map((image, index) => (
-                      <Image key={index} src={image} alt="Project Image" width={200} height={300} className="rounded-lg" />
-                    ))}
-                    </div>
+              <div key={project._id} className="w-1/4 flex flex-col items-center rounded-lg overflow-hidden shadow-md bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105">
+                <div className="w-full h-64 relative">
+                  <Image 
+                    src={project.images[0]?.toString()} 
+                    alt={project.title} 
+                    layout="fill" 
+                    objectFit="cover" 
+                    className="rounded-t-lg"
+                  />
                 </div>
+                <div className="p-4 bg-white w-full text-center">
+                  <h2 className="text-lg font-semibold">{project.title}</h2>
+                </div>
+              </div>
             ))}
+          </div>
 
-            {/* <a href="https://ibb.co/TDSvCWzy"><img src="https://i.ibb.co/SD8sLfqS/japan.png" alt="japan" border="0"></a> */}
-            {/* <Image 
-                src="https://i.ibb.co/SD8sLfqS/japan.png" 
-                alt="Profile" 
-                width={600} 
-                height={800} 
-                className="rounded-lg"
-            /> */}
         </div>
     );
 }
