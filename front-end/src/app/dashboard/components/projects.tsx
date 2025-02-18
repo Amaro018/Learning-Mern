@@ -34,16 +34,20 @@ export default function Projects() {
     const [previews, setPreviews] = useState<string[]>([]);
 
     // Handle input changes for form fields
-    const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>, index?: number) => {
-        const { name, value } = event.target;
-        if (index === undefined) {
-          setForm({ ...form, [name]: value });
-        } else {
-          const updatedMaterials = [...form.materials];
-          updatedMaterials[index] = { ...updatedMaterials[index], [name]: value };
-          setForm({ ...form, materials: updatedMaterials });
-        }
-      };
+    const handleFormChange = (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      index?: number
+    ) => {
+      const { name, value } = event.target;
+      if (index === undefined) {
+        setForm({ ...form, [name]: value });
+      } else {
+        const updatedMaterials = [...form.materials];
+        updatedMaterials[index] = { ...updatedMaterials[index], [name]: value };
+        setForm({ ...form, materials: updatedMaterials });
+      }
+    };
+    
 
 
 
