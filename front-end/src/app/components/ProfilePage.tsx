@@ -18,7 +18,7 @@ export default function ProfilePage() {
 
     {/* Text Content */}
     <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left gap-3">
-      <p className="text-3xl sm:text-4xl font-bold">Hi, I'm Pael</p>
+      <p className="text-3xl sm:text-4xl font-bold">Hi, I&apos;m Pael</p>
       <p className="text-xl sm:text-2xl">An architect based in Albay, Philippines</p>
       <button className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-6 rounded">
         Go to Portfolio
