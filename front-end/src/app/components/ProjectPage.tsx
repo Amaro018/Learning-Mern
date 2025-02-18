@@ -22,27 +22,30 @@ export default function ProjectPage() {
 
 
     return (
-        <div className="py-8  bg-stone-300">
-            <h1 className="text-2xl font-bold text-center">List of my Projects</h1>
-            <div className="flex flex-wrap justify-center gap-4 py-8">
-            {projects.map((project) => (
-              <div key={project._id} className="w-1/4 flex flex-col items-center rounded-lg overflow-hidden shadow-md bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105">
-                <div className="w-full h-64 relative">
-                  <Image 
-                    src={project.images[0]?.toString()} 
-                    alt={project.title} 
-                    layout="fill" 
-                    objectFit="cover" 
-                    className="rounded-t-lg"
-                  />
-                </div>
-                <div className="p-4 bg-white w-full text-center">
-                  <h2 className="text-lg font-semibold">{project.title}</h2>
-                </div>
-              </div>
-            ))}
-          </div>
-
+<div className="py-8 bg-stone-300">
+  <h1 className="text-2xl font-bold text-center">List of my Projects</h1>
+  <div className="flex flex-wrap justify-center gap-4 py-8">
+    {projects.map((project) => (
+      <div
+        key={project._id}
+        className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col items-center rounded-lg overflow-hidden shadow-md bg-white cursor-pointer transition-transform hover:scale-105"
+      >
+        <div className="w-full h-64 relative">
+          <Image
+            src={project.images[0]?.toString()}
+            alt={project.title}
+            layout="fill"
+            objectFit="cover"
+            className="rounded-t-lg"
+          />
         </div>
+        <div className="p-4 bg-white w-full text-center">
+          <h2 className="text-lg font-semibold">{project.title}</h2>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
     );
 }
