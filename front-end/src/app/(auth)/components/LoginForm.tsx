@@ -1,15 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as NotesApi from "../../network/notes_api";
 import { LoginCredentials } from "../../network/notes_api";
 import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar";
 import { TextField } from "@mui/material";
+import { User } from "@/app/models/user";
 
 export default function LoginForm() {
   const [form, setForm] = useState<LoginCredentials>({ username: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const user = await NotesApi.getUser();
+        setCurrentUser(user);
+        router.push("/dashboard");
+      } catch (error) {
+        console.log("No user logged in, displaying login form.");
+      }
+    }
+    checkSession();
+  }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -64,3 +79,4 @@ export default function LoginForm() {
     </>
   );
 }
+

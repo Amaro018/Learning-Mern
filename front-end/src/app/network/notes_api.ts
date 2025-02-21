@@ -110,6 +110,7 @@ export async function fetchProjects(): Promise<Project[]> {
 
 export interface ProjectInput {
     title: string;
+    images: File[];
     description?: string;
     materials?: Material[];
 }
@@ -141,3 +142,43 @@ export const createProject = async (form: ProjectInput, images: File[]) => {
         throw error;
     }
 };
+
+export async function deleteProject(projectId: string){
+    await fetchData(`/api/projects/${projectId}`, {method: "DELETE"});
+}
+
+export async function updateProject(projectId: string, form: ProjectInput): Promise<Project> {
+    console.log("Updating project with form:", form);
+
+    const formData = new FormData();
+
+    // Append text fields
+    if (form.title) formData.append("title", form.title);
+    if (form.description) formData.append("description", form.description);
+    if (form.materials) formData.append("materials", JSON.stringify(form.materials));
+
+    // Append new images if they are files
+    form.images.forEach((image) => {
+        if (image instanceof File) {
+            formData.append("images", image);
+        }
+    });
+
+    // Append existing image URLs separately (backend should handle this properly)
+    const existingImages = form.images.filter(img => !(img instanceof File));
+    if (existingImages.length > 0) {
+        formData.append("existingImages", JSON.stringify(existingImages));
+    }
+
+    const response = await fetchData(`/api/projects/${projectId}`, {
+        method: "PATCH",
+        body: formData,
+        credentials: "include",
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to update project: ${response.statusText}`);
+    }
+
+    return await response.json();
+}

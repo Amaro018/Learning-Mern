@@ -1,4 +1,6 @@
+"use client"
 import Image from "next/image";
+import FacebookRoundedIcon from '@mui/icons-material/FacebookRounded';
 
 export default function ProfilePage() {
     return (
@@ -20,9 +22,15 @@ export default function ProfilePage() {
     <div className="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left gap-3">
       <p className="text-3xl sm:text-4xl font-bold">Hi, I&apos;m Pael</p>
       <p className="text-xl sm:text-2xl">An architect based in Albay, Philippines</p>
+      <div className="flex gap-4">
       <button className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-6 rounded">
         Go to Portfolio
       </button>
+      <button className="bg-blue-700 hover:bg-blue-900 text-white font-bold px-6 rounded flex items-center gap-2">
+        <FacebookRoundedIcon sx={{color: 'white'}} />
+        <p>Facebook</p>
+      </button>
+      </div>
     </div>
   </div>
 </div>

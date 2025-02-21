@@ -67,30 +67,6 @@ interface Material {
 }
 
 
-// export const createProject: RequestHandler<unknown, unknown, CreateProjectBody> = async (req, res, next) => {
-//     try {
-//         assertIsDefined(req.session.userId);
-//         const { title, description, materials } = req.body;
-//         const files = req.files as MulterFile[];
-//         const imageUrls = files ? files.map(file => file.path) : [];
-
-//         if (!title) {
-//             throw createHttpError(400, "Title is required");
-//         }
-
-//         const newProject = await ProjectModel.create({
-//             title,
-//             description,
-//             images: imageUrls,
-//             userId: req.session.userId,
-//             materials
-//         });
-
-//         res.status(201).json(newProject);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
 
 interface CreateProjectBody {
     title: string;
@@ -146,39 +122,69 @@ interface UpdateProjectBody {
 
 export const updateProject: RequestHandler<UpdateProjectParams, unknown, UpdateProjectBody, unknown> = async (req, res, next) => {
     try {
-        assertIsDefined(req.session.userId);
-        const { projectId } = req.params;
-        const { title, description } = req.body;
+        const authenticatedUserId = req.session.userId;
+        assertIsDefined(authenticatedUserId);
 
+        const { projectId } = req.params;
+        const { title, description, materials } = req.body;
+        const files = req.files as Express.Multer.File[] | undefined;
+
+        console.log("Received update request for project:", projectId);
+        console.log("Received files:", files);
+
+        // Validate ObjectId
         if (!mongoose.isValidObjectId(projectId)) {
             throw createHttpError(400, "Invalid project ID");
         }
 
-        const project = await ProjectModel.findById(projectId).exec();
-
+        // Fetch project
+        const project = await ProjectModel.findById(projectId);
         if (!project) {
             throw createHttpError(404, "Project not found");
         }
 
-        if (!project.userId.equals(req.session.userId)) {
-            throw createHttpError(403, "Unauthorized");
+        // Check user authorization
+        if (!project.userId.equals(authenticatedUserId)) {
+            throw createHttpError(403, "You do not have permission to update this project");
         }
 
-        if (title !== undefined) project.title = title;
-        if (description !== undefined) project.description = description;
+        // Update title and description
+        if (title) project.title = title;
+        if (description) project.description = description;
+
+        // Update materials
+        if (materials !== undefined) {
+            try {
+                project.materials = typeof materials === "string" ? JSON.parse(materials) : materials;
+                project.markModified("materials");
+            } catch (error) {
+                next(error);
+            }
+        }
+
+        // Append new images instead of replacing
+        if (files && files.length > 0) {
+            const imageUrls = files.map(file => file.path);
+            project.images = [...project.images, ...imageUrls];
+            project.markModified("images");
+        }
+
+        console.log("Final Project Data Before Save:", project);
 
         const updatedProject = await project.save();
         res.status(200).json(updatedProject);
     } catch (error) {
         next(error);
-    }    
+    }
 };
 
-export const deleteProject: RequestHandler = async (req, res, next) => {
-    try {
-        assertIsDefined(req.session.userId);
-        const { projectId } = req.params;
 
+
+export const deleteProject: RequestHandler = async (req, res, next) => {
+    const authenticatedUserId = req.session.userId;
+    const { projectId } = req.params;
+    try {
+        assertIsDefined(authenticatedUserId);
         if (!mongoose.isValidObjectId(projectId)) {
             throw createHttpError(400, "Invalid project ID");
         }

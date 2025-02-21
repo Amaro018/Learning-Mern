@@ -10,7 +10,7 @@ export interface Material {
 export interface Project {
     _id: string;
     title: string;
-    images: File[]; // URLs of the images
     description: string;
     materials: Material[];
+    images?: File[];
 }
