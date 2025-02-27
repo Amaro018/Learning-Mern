@@ -18,9 +18,8 @@ export default function LoginForm() {
       try {
         const user = await NotesApi.getUser();
         setCurrentUser(user);
-        router.push("/dashboard");
       } catch (error) {
-        console.log("No user logged in, displaying login form.");
+        console.log("No user logged in, displaying login form.", error);
       }
     }
     checkSession();
@@ -41,6 +40,11 @@ export default function LoginForm() {
       setError("Error logging in. Please try again.");
     }
   };
+
+  if (currentUser) {
+    router.push("/dashboard");
+  }
+
 
   return (
     <>
