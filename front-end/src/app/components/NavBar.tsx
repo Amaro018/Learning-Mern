@@ -36,7 +36,7 @@ export default function NavBar() {
     };
 
     return (
-        <div className="bg-stone-200 px-6 sm:px-12 md:px-16 py-4 text-stone-600">
+        <div className="bg-slate-700 px-6 sm:px-12 md:px-16 py-4 text-white">
             <nav className="flex justify-between items-center">
                 
                 {/* Logo */}
@@ -47,11 +47,11 @@ export default function NavBar() {
                     {currentUser ? (
                         <>
                             <p>Logged in as: {currentUser.username}</p>
-                            <Link href="/" className="hover:text-stone-800">Home</Link>
-                            <Link href="/dashboard" className="hover:text-stone-800">Dashboard</Link>
+                            <Link href="/" className="hover:text-slate-200">Home</Link>
+                            <Link href="/dashboard" className="hover:text-slate-200">Dashboard</Link>
                             <button 
                                 onClick={handleLogout} 
-                                className="bg-stone-500 hover:bg-stone-700 text-white px-4 py-1 rounded"
+                                className="bg-slate-500 hover:text-slate-200 text-white px-4 py-1 rounded"
                             >
                                 Logout
                             </button>
@@ -59,8 +59,8 @@ export default function NavBar() {
                     ) : (
                         <>
 
-                            <Link href="/" className="hover:text-stone-800">Home</Link>
-                            <Link href="/login" className="hover:text-stone-800">Login</Link>
+                            <Link href="/" className="hover:text-slate-200">Home</Link>
+                            <Link href="/login" className="hover:text-slate-200">Login</Link>
                         </>
                     )}
                 </div>
@@ -79,18 +79,18 @@ export default function NavBar() {
                     {currentUser ? (
                         <>
                             <p className="text-lg font-semibold">Logged in as: {currentUser.username}</p>
-                            <Link href="/dashboard" className="hover:text-stone-800">Dashboard</Link>
+                            <Link href="/dashboard" className="hover:text-slate-200">Dashboard</Link>
                             <button 
                                 onClick={handleLogout} 
-                                className="bg-stone-500 hover:bg-stone-700 text-white px-4 py-1 rounded"
+                                className="bg-stone-500 hover:text-slate-200 text-white px-4 py-1 rounded"
                             >
                                 Logout
                             </button>
                         </>
                     ) : (
                         <>
-                            <Link href="/signup" className="hover:text-stone-800">Sign Up</Link>
-                            <Link href="/login" className="hover:text-stone-800">Login</Link>
+                            <Link href="/signup" className="hover:text-slate-200">Sign Up</Link>
+                            <Link href="/login" className="hover:text-slate-200">Login</Link>
                         </>
                     )}
                 </div>
