@@ -28,6 +28,7 @@ export default function Projects() {
       if (project) {
         setEditingProjectId(project._id);
         setForm({
+          projectId: project._id,
           title: project.title,
           description: project.description || "",
           materials: project.materials || [{ name: "", description: "", size: "", color: "", quantity: 0 }],
@@ -45,6 +46,7 @@ export default function Projects() {
 
   const resetForm = () => {
     setForm({
+        projectId: "",
         title: "",
         description: "",
         materials: [{ name: "", description: "", size: "", color: "", quantity: 0 }],
@@ -58,6 +60,7 @@ export default function Projects() {
     const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
 
     const [form, setForm] = useState({
+        projectId: "",
         title: "",
         description: "",
         materials: [{ name: "", description: "", size: "", color: "", quantity: 0 }],
@@ -121,9 +124,9 @@ export default function Projects() {
 
       try {
         if (editingProjectId) {
-          console.log("editing")
+          console.log("editing this",form, images)
             // Updating project
-            const response = await ProjectsApi.updateProject(editingProjectId, { ...form, images });
+            const response = await ProjectsApi.updateProject(editingProjectId,form,images);
             setProjects(projects.map(project => (project._id === editingProjectId ? response : project)));
         } else {
             // Creating project
@@ -134,7 +137,7 @@ export default function Projects() {
         handleClose();
         resetForm();
     } catch (error) {
-        console.error("Failed to save project:", error);
+        console.error("Failed to update project:", error);
     }
     };
 
@@ -163,7 +166,7 @@ export default function Projects() {
 {}
     return (
         <>
-            <div className="flex flex-col">
+            <div className="flex flex-col h-screen">
                 <div className="flex justify-between">
                     <h1 className="text-3xl font-bold mb-4">List of Projects</h1>
                     <button className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded" onClick={() => handleOpen()}>

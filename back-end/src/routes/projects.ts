@@ -27,7 +27,8 @@ router.get("/:projectId", projectController.getProject);
 // Handle multiple image uploads
 router.post("/", upload.array("images", 10), projectController.createProject);
 
-router.patch("/:projectId", projectController.updateProject);
+router.patch("/:projectId", upload.array("images", 10), projectController.updateProject);
+
 router.delete("/:projectId", projectController.deleteProject);
 
 export default router;

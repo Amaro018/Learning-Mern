@@ -147,38 +147,90 @@ export async function deleteProject(projectId: string){
     await fetchData(`/api/projects/${projectId}`, {method: "DELETE"});
 }
 
-export async function updateProject(projectId: string, form: ProjectInput): Promise<Project> {
-    console.log("Updating project with form:", form);
+// frontend/api/updateProject.ts
 
-    const formData = new FormData();
+// export async function updateProject(projectId: string, form: ProjectInput, images: File[]): Promise<Project> {
 
-    // Append text fields
-    if (form.title) formData.append("title", form.title);
-    if (form.description) formData.append("description", form.description);
-    if (form.materials) formData.append("materials", JSON.stringify(form.materials));
+    
 
-    // Append new images if they are files
-    form.images.forEach((image) => {
-        if (image instanceof File) {
-            formData.append("images", image);
-        }
-    });
+//     console.log("Updating project with form:", form);
 
-    // Append existing image URLs separately (backend should handle this properly)
-    const existingImages = form.images.filter(img => !(img instanceof File));
-    if (existingImages.length > 0) {
-        formData.append("existingImages", JSON.stringify(existingImages));
-    }
+//     const formData = new FormData();
+//     // Append text fields
+//     formData.append("title", form.title);
+//     if (form.description) formData.append("description", form.description);
+//     if (form.materials) formData.append("materials", JSON.stringify(form.materials));
 
-    const response = await fetchData(`/api/projects/${projectId}`, {
-        method: "PATCH",
-        body: formData,
-        credentials: "include",
-    });
+//     // Append images
+//     images.forEach((image) => formData.append("images", image));
 
-    if (!response.ok) {
-        throw new Error(`Failed to update project: ${response.statusText}`);
-    }
+//     // if (form.materials) formData.append("materials", JSON.stringify(form.materials));
 
-    return await response.json();
-}
+//     // // Append new images if they are files
+//     // form.images.forEach((image) => {
+//     //     if (image instanceof File) {
+//     //         formData.append("files", image);
+//     //     }
+//     // });
+
+//     // // Append existing image URLs separately (backend should handle this properly)
+//     // const existingImages = form.images.filter(img => !(img instanceof File));
+//     // if (existingImages.length > 0) {
+//     //     formData.append("existingImages", JSON.stringify(existingImages));
+//     // }
+
+//     // // ✅ Correctly log FormData contents
+//     // console.log("FormData contents:");
+//     // for (const [key, value] of formData.entries()) {
+//     //     console.log(key, value);
+//     // }
+
+//     // await fetchData(`/api/notes/${noteId}`, {method: "PATCH", body: JSON.stringify(note), headers: {"Content-Type": "application/json"}})
+
+//     const response = await fetchData(`/api/projects/${projectId}`, {
+//         method: "PATCH",
+//         body: formData,
+//         headers: {"Content-Type": "multipart/form-data"},
+//         credentials: "include",
+//     });
+
+//     if (!response.ok) {
+//         throw new Error(`Failed to update project: ${response.statusText}`);
+//     }
+
+//     console.log("Project updated successfully");
+//     return await response.json();
+// }
+export async function updateProject(
+    projectId: string,
+    form: ProjectInput,
+    images: File[]
+  ): Promise<Project> {
+      const formData = new FormData();
+  
+      // Append form fields (handle objects properly)
+      Object.entries(form).forEach(([key, value]) => {
+          formData.append(key, typeof value === "object" ? JSON.stringify(value) : value as string);
+      });
+  
+      // Append images
+      images.forEach((image) => {
+          formData.append("images", image);
+      });
+  
+      const response = await fetch(`/api/projects/${projectId}`, {
+          method: "PATCH",
+          body: formData, // Browser auto-sets headers
+          credentials: "include",
+      });
+  
+      if (!response.ok) {
+          throw new Error(`Failed to update project: ${response.statusText}`);
+      }
+  
+      console.log("Project updated successfully");
+      return await response.json();
+  }
+  
+
+

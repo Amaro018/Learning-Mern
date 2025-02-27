@@ -76,14 +76,15 @@ interface CreateProjectBody {
 }
 
 export const createProject: RequestHandler<unknown, unknown, CreateProjectBody> = async (req, res, next) => {
-    console.log('Received body:', req.body);
-    console.log('Content-Type:', req.headers['content-type']);
+    console.log('Received bodyss:', req.body);
+    console.log('Content-Typssse:', req.headers['content-type']);
 
     try {
         assertIsDefined(req.session.userId);
         const files = req.files as MulterFile[];
         const { title, description, materials } = req.body;
         console.log("Received body:", req.body);
+        console.log("Received files:", files);
 
         if (!title) {
             throw createHttpError(400, "Title is required");
@@ -107,77 +108,55 @@ export const createProject: RequestHandler<unknown, unknown, CreateProjectBody> 
 };
 
 
-
-
-interface UpdateProjectParams {
-    projectId: string;
-}
-
 interface UpdateProjectBody {
+    projectId?: string;
     title?: string;
-    images?: string[];
     description?: string;
-    materials?: Material[];
+    images?: string[];
+    materials?: string | string[];
 }
 
-export const updateProject: RequestHandler<UpdateProjectParams, unknown, UpdateProjectBody, unknown> = async (req, res, next) => {
+
+
+// ✅ FIX: Use correct types in `RequestHandler`
+export const updateProject: RequestHandler<unknown, unknown, UpdateProjectBody> = async (req, res, next) => {
+    console.log("Received body:", req.body);
+    const { projectId } = req.body;
+
     try {
-        const authenticatedUserId = req.session.userId;
-        assertIsDefined(authenticatedUserId);
-
-        const { projectId } = req.params;
-        const { title, description, materials } = req.body;
-        const files = req.files as Express.Multer.File[] | undefined;
-
-        console.log("Received update request for project:", projectId);
-        console.log("Received files:", files);
-
-        // Validate ObjectId
-        if (!mongoose.isValidObjectId(projectId)) {
-            throw createHttpError(400, "Invalid project ID");
-        }
-
-        // Fetch project
-        const project = await ProjectModel.findById(projectId);
+        const project = await ProjectModel.findById(projectId).exec();
         if (!project) {
             throw createHttpError(404, "Project not found");
         }
 
-        // Check user authorization
-        if (!project.userId.equals(authenticatedUserId)) {
-            throw createHttpError(403, "You do not have permission to update this project");
+        const { title, description, materials } = req.body;
+        const images = req.files as Express.Multer.File[] || [];
+
+        if (!title || !description) {
+            throw createHttpError(400, "Title and description are required");
         }
 
-        // Update title and description
-        if (title) project.title = title;
-        if (description) project.description = description;
+        project.title = title;
+        project.description = description;
 
-        // Update materials
-        if (materials !== undefined) {
-            try {
-                project.materials = typeof materials === "string" ? JSON.parse(materials) : materials;
-                project.markModified("materials");
-            } catch (error) {
-                next(error);
-            }
+        if (materials) {
+            const parsedMaterials = typeof materials === "string" ? JSON.parse(materials) : materials;
+            project.materials = parsedMaterials;
         }
 
-        // Append new images instead of replacing
-        if (files && files.length > 0) {
-            const imageUrls = files.map(file => file.path);
-            project.images = [...project.images, ...imageUrls];
-            project.markModified("images");
+        if (images.length > 0) {
+            const imageUrls = images.map(image => image.path);
+            project.images = imageUrls;
         }
-
-        console.log("Final Project Data Before Save:", project);
 
         const updatedProject = await project.save();
+
         res.status(200).json(updatedProject);
     } catch (error) {
         next(error);
     }
-};
 
+};
 
 
 export const deleteProject: RequestHandler = async (req, res, next) => {
