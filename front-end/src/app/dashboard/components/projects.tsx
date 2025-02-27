@@ -184,7 +184,14 @@ export default function Projects() {
                         <button className="p-2 hover:scale-110 transition-transform" onClick={() => handleDeleteProject(project._id)}><DeleteForever sx={{ color: "red" }}/></button>
                         </div>
 
-                            <Image src={project.images[0] ? project.images[0].toString() : ""} alt={project.title} width={400} height={300} className="w-full h-48 object-cover" />
+                        <Image 
+  src={project.images?.[0]?.toString() || ""} 
+  alt={project.title} 
+  width={400} 
+  height={300} 
+  className="w-full h-48 object-cover" 
+/>
+
                             <div className="p-4">
                                 <h2 className="text-xl font-semibold mb-2">{project.title}</h2>
                             </div>
