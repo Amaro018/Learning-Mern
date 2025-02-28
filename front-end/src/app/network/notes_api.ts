@@ -39,12 +39,14 @@ export interface LoginCredentials {
 }
 
 export async function login(credentials: LoginCredentials): Promise<User> {
-  const response = await api.post("/api/users/login", credentials);
+  const response = await api.post("/api/users/login", credentials, {
+    withCredentials: true,
+  });
   return response.data;
 }
 
 export async function logout() {
-  await api.post("/api/users/logout");
+  await api.post("/api/users/logout", {}, { withCredentials: true });
 }
 //LOGIN & SIGNUP
 
