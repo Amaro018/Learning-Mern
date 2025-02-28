@@ -14,8 +14,8 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: validateEnv.CLIENT_URL,
-    credentials: true,
+    origin: "https://archi-raphael-profile.vercel.app/", // Ensure this matches your frontend's deployed domain
+    credentials: true, // Required for sessions
   })
 );
 
@@ -25,7 +25,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production", // Must be true for HTTPS
+      httpOnly: true, // Prevents client-side access to cookies
+      sameSite: "none", // Allows cross-origin cookies (important for Vercel + Render)
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
     rolling: true,
     store: MongoStore.create({
