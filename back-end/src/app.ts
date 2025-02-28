@@ -14,7 +14,7 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: "https://archi-raphael-profile.vercel.app/", // Ensure this matches your frontend's deployed domain
+    origin: validateEnv.CLIENT_URL, // Ensure this matches your frontend's deployed domain
     credentials: true, // Required for sessions
   })
 );
