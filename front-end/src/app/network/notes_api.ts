@@ -1,19 +1,20 @@
 import { Note } from "../models/note";
 import { Material, Project } from "../models/project";
 import { User } from "../models/user";
+import api from "../utils/axios";
 
-async function fetchData(input: RequestInfo, init?: RequestInit) {
-  console.log("env", process.env.API_PATH);
-  const response = await fetch(`${process.env.API_PATH}${input}`, init);
-  console.log(response);
-  if (response.ok) {
-    return response;
-  } else {
-    const errorBody = await response.json();
-    const errorMessage = new Error(errorBody.error);
-    throw errorMessage;
-  }
-}
+// async function fetchData(input: RequestInfo, init?: RequestInit) {
+//   console.log("env", process.env.API_PATH);
+//   const response = await fetch(`${process.env.API_PATH}${input}`, init);
+//   console.log(response);
+//   if (response.ok) {
+//     return response;
+//   } else {
+//     const errorBody = await response.json();
+//     const errorMessage = new Error(errorBody.error);
+//     throw errorMessage;
+//   }
+// }
 
 //LOGIN & SIGNUP
 export interface SignUpCredentials {
@@ -23,18 +24,18 @@ export interface SignUpCredentials {
 }
 
 export async function getUser(): Promise<User> {
-  const response = await fetchData("/api/users", { method: "GET" });
-  return response.json();
+  const response = await api.get("/api/users");
+  return response.data;
 }
 
-export async function signUp(credentials: SignUpCredentials): Promise<User> {
-  const response = await fetchData("/api/users/signup", {
-    method: "POST",
-    body: JSON.stringify(credentials),
-    headers: { "Content-Type": "application/json" },
-  });
-  return response.json();
-}
+// export async function signUp(credentials: SignUpCredentials): Promise<User> {
+//   const response = await fetchData("/api/users/signup", {
+//     method: "POST",
+//     body: JSON.stringify(credentials),
+//     headers: { "Content-Type": "application/json" },
+//   });
+//   return response.json();
+// }
 
 export interface LoginCredentials {
   username: string;
@@ -42,22 +43,18 @@ export interface LoginCredentials {
 }
 
 export async function login(credentials: LoginCredentials): Promise<User> {
-  const response = await fetchData("/api/users/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials),
-  });
-  return response.json();
+  const response = await api.post("/api/users/login", credentials);
+  return response.data;
 }
 
 export async function logout() {
-  await fetchData("/api/users/logout", { method: "POST" });
+  await api.post("/api/users/logout");
 }
 //LOGIN & SIGNUP
 
 export async function fetchNotes(): Promise<Note[]> {
-  const response = await fetchData("/api/notes", { method: "GET" });
-  return response.json();
+  const response = await api.get("/api/notes");
+  return response.data;
 }
 
 export interface NoteInput {
@@ -66,33 +63,25 @@ export interface NoteInput {
 }
 
 export async function createNote(note: NoteInput): Promise<Note> {
-  const response = await fetchData("/api/notes", {
-    method: "POST",
-    body: JSON.stringify(note),
-    headers: { "Content-Type": "application/json" },
-  });
-  return response.json();
+  const response = await api.post("/api/notes", note);
+  return response.data;
 }
 
 export async function updateNote(
   noteId: string,
   note: NoteInput
 ): Promise<Note> {
-  const response = await fetchData(`/api/notes/${noteId}`, {
-    method: "PATCH",
-    body: JSON.stringify(note),
-    headers: { "Content-Type": "application/json" },
-  });
-  return response.json();
+  const response = await api.patch(`/api/notes/${noteId}`, note);
+  return response.data;
 }
 
 export async function deleteNote(noteId: string) {
-  await fetchData(`/api/notes/${noteId}`, { method: "DELETE" });
+  await api.delete(`/api/notes/${noteId}`);
 }
 
 export async function fetchProjects(): Promise<Project[]> {
-  const response = await fetchData("/api/projects", { method: "GET" });
-  return response.json();
+  const response = await api.get("/api/projects");
+  return response.data;
 }
 
 // export async function createProject(project: ProjectInput, images: File[]): Promise<Project> {
@@ -139,17 +128,13 @@ export const createProject = async (form: ProjectInput, images: File[]) => {
   images.forEach((image) => formData.append("images", image));
 
   try {
-    const response = await fetchData("/api/projects", {
-      method: "POST",
-      body: formData,
-      credentials: "include", // To send cookies/session
-    });
+    const response = await api.post("/api/projects", formData);
 
-    if (!response.ok) {
+    if (!response.status || response.status >= 400) {
       throw new Error(`Error: ${response.status}`);
     }
 
-    return await response.json();
+    return await response.data;
   } catch (error) {
     console.error("Error creating project:", error);
     throw error;
@@ -157,7 +142,7 @@ export const createProject = async (form: ProjectInput, images: File[]) => {
 };
 
 export async function deleteProject(projectId: string) {
-  await fetchData(`/api/projects/${projectId}`, { method: "DELETE" });
+  await api.delete(`/api/projects/${projectId}`);
 }
 
 // frontend/api/updateProject.ts
