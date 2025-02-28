@@ -28,14 +28,10 @@ export async function getUser(): Promise<User> {
   return response.data;
 }
 
-// export async function signUp(credentials: SignUpCredentials): Promise<User> {
-//   const response = await fetchData("/api/users/signup", {
-//     method: "POST",
-//     body: JSON.stringify(credentials),
-//     headers: { "Content-Type": "application/json" },
-//   });
-//   return response.json();
-// }
+export async function signUp(credentials: SignUpCredentials): Promise<User> {
+  const response = await api.post("/api/users/signup", credentials);
+  return response.data;
+}
 
 export interface LoginCredentials {
   username: string;
