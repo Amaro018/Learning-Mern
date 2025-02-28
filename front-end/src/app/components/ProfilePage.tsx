@@ -6,7 +6,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 
 export default function ProfilePage() {
     return (
-<div className="flex flex-col items-center justify-center bg-slate-300 h-screen ">
+<div className="flex flex-col items-center justify-center bg-slate-300 h-full ">
   <div className="flex flex-col items-center justify-center gap-8">
     {/* Profile Image */}
     <div className="">

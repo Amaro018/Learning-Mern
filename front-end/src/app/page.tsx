@@ -4,7 +4,7 @@ import ProjectPage from "./components/ProjectPage";
 
 export default function Home() {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-[calc(100vh-64px)] flex flex-col">
       {/* Navbar - Always Sticky */}
       <div className="sticky top-0 z-50 w-full">
         <NavBar />
