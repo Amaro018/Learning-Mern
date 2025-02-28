@@ -173,190 +173,195 @@ export default function Projects() {
   }
   return (
     <>
-      <div className="flex flex-col h-screen">
-        <div className="flex justify-between">
-          <h1 className="text-3xl font-bold mb-4">List of Projects</h1>
-          <button
-            className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => handleOpen()}
-          >
-            Add Project
-          </button>
-        </div>
-        <div className="flex flex-wrap py-4">
-          {/* Project List */}
-          {projects.map((project) => (
-            <div
-              key={project._id}
-              className="w-full sm:w-1/2 lg:w-1/3 px-2 mb-4"
+      <div className="min-h-screen">
+        <div className="flex flex-col h-full p-16">
+          <div className="flex justify-between">
+            <h1 className="text-3xl font-bold mb-4">List of Projects</h1>
+            <button
+              className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => handleOpen()}
             >
-              <div className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 h-full">
-                <div className="flex justify-end">
-                  <button
-                    className="p-2 hover:scale-110 transition-transform"
-                    onClick={() => handleOpen(project)}
-                  >
-                    <EditIcon sx={{ color: "green" }} />
-                  </button>
-                  <button
-                    className="p-2 hover:scale-110 transition-transform"
-                    onClick={() => handleDeleteProject(project._id)}
-                  >
-                    <DeleteForever sx={{ color: "red" }} />
-                  </button>
-                </div>
+              Add Project
+            </button>
+          </div>
+          <div className="flex flex-wrap py-4 h-full">
+            {/* Project List */}
+            {projects.map((project) => (
+              <div
+                key={project._id}
+                className="w-full sm:w-1/2 lg:w-1/3 px-2 mb-4"
+              >
+                <div className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform hover:scale-105 h-full">
+                  <div className="flex justify-end">
+                    <button
+                      className="p-2 hover:scale-110 transition-transform"
+                      onClick={() => handleOpen(project)}
+                    >
+                      <EditIcon sx={{ color: "green" }} />
+                    </button>
+                    <button
+                      className="p-2 hover:scale-110 transition-transform"
+                      onClick={() => handleDeleteProject(project._id)}
+                    >
+                      <DeleteForever sx={{ color: "red" }} />
+                    </button>
+                  </div>
 
-                <Image
-                  src={project.images?.[0]?.toString() || ""}
-                  alt={project.title}
-                  width={400}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                />
+                  <Image
+                    src={project.images?.[0]?.toString() || ""}
+                    alt={project.title}
+                    width={400}
+                    height={300}
+                    className="w-full h-48 object-cover"
+                  />
 
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">
-                    {project.title}
-                  </h2>
+                  <div className="p-4">
+                    <h2 className="text-xl font-semibold mb-2">
+                      {project.title}
+                    </h2>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Add Project Modal */}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        sx={{ overflowY: "scroll", height: "100vh" }}
-      >
-        <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-            sx={{ marginBottom: 2 }}
-          >
-            {editingProjectId ? "Edit Project" : "Add New Project"}
-          </Typography>
-          <TextField
-            required
-            label="Project Title"
-            fullWidth
-            name="title"
-            value={form.title}
-            onChange={handleFormChange}
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            required
-            label="Project Description"
-            fullWidth
-            name="description"
-            value={form.description}
-            onChange={handleFormChange}
-            sx={{ marginBottom: 2 }}
-          />
-          {/* Dynamically Render Materials Input Fields */}
-          {form.materials.map((material, index) => (
-            <div key={index}>
-              <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                Material {index + 1}
-              </Typography>
-              <TextField
-                label="Material Title"
-                fullWidth
-                name="name"
-                value={material.name}
-                onChange={(e) => handleFormChange(e, index)}
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                label="Material Description"
-                fullWidth
-                name="description"
-                value={material.description}
-                onChange={(e) => handleFormChange(e, index)}
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                label="Material Size"
-                fullWidth
-                name="size"
-                value={material.size}
-                onChange={(e) => handleFormChange(e, index)}
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                label="Material Color"
-                fullWidth
-                name="color"
-                value={material.color}
-                onChange={(e) => handleFormChange(e, index)}
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                label="Material Quantity"
-                fullWidth
-                name="quantity"
-                type="number"
-                value={material.quantity}
-                onChange={(e) => handleFormChange(e, index)}
-                sx={{ marginBottom: 2 }}
-              />
-            </div>
-          ))}
-
-          {/* Button to Add More Materials */}
-          <button
-            type="button"
-            onClick={handleAddMaterial}
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
-          >
-            Add More Material
-          </button>
-
-          {/* Image Upload Input */}
-          <input
-            type="file"
-            accept="image/*"
-            name="images"
-            multiple
-            onChange={handleImageChange}
-            className="mb-4"
-          />
-
-          {/* Image Preview */}
-          <div className="flex gap-2 mt-4">
-            {previews.slice(0, 5).map((src, index) => (
-              <div key={index} className="w-24 h-24 rounded-lg overflow-hidden">
-                <Image
-                  src={src}
-                  alt="Preview"
-                  width={400}
-                  height={300}
-                  className="w-full h-full object-cover"
+        {/* Add Project Modal */}
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          sx={{ overflowY: "scroll", height: "100vh" }}
+        >
+          <Box sx={style}>
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+              sx={{ marginBottom: 2 }}
+            >
+              {editingProjectId ? "Edit Project" : "Add New Project"}
+            </Typography>
+            <TextField
+              required
+              label="Project Title"
+              fullWidth
+              name="title"
+              value={form.title}
+              onChange={handleFormChange}
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              required
+              label="Project Description"
+              fullWidth
+              name="description"
+              value={form.description}
+              onChange={handleFormChange}
+              sx={{ marginBottom: 2 }}
+            />
+            {/* Dynamically Render Materials Input Fields */}
+            {form.materials.map((material, index) => (
+              <div key={index}>
+                <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                  Material {index + 1}
+                </Typography>
+                <TextField
+                  label="Material Title"
+                  fullWidth
+                  name="name"
+                  value={material.name}
+                  onChange={(e) => handleFormChange(e, index)}
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Material Description"
+                  fullWidth
+                  name="description"
+                  value={material.description}
+                  onChange={(e) => handleFormChange(e, index)}
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Material Size"
+                  fullWidth
+                  name="size"
+                  value={material.size}
+                  onChange={(e) => handleFormChange(e, index)}
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Material Color"
+                  fullWidth
+                  name="color"
+                  value={material.color}
+                  onChange={(e) => handleFormChange(e, index)}
+                  sx={{ marginBottom: 2 }}
+                />
+                <TextField
+                  label="Material Quantity"
+                  fullWidth
+                  name="quantity"
+                  type="number"
+                  value={material.quantity}
+                  onChange={(e) => handleFormChange(e, index)}
+                  sx={{ marginBottom: 2 }}
                 />
               </div>
             ))}
-            {previews.length > 5 && (
-              <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-lg text-xl font-bold">
-                +{previews.length - 5}
-              </div>
-            )}
-          </div>
 
-          <button
-            className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded mt-4"
-            onClick={handleCreateProject}
-          >
-            {editingProjectId ? "Update Project" : "Save Project"}
-          </button>
-        </Box>
-      </Modal>
+            {/* Button to Add More Materials */}
+            <button
+              type="button"
+              onClick={handleAddMaterial}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+            >
+              Add More Material
+            </button>
+
+            {/* Image Upload Input */}
+            <input
+              type="file"
+              accept="image/*"
+              name="images"
+              multiple
+              onChange={handleImageChange}
+              className="mb-4"
+            />
+
+            {/* Image Preview */}
+            <div className="flex gap-2 mt-4">
+              {previews.slice(0, 5).map((src, index) => (
+                <div
+                  key={index}
+                  className="w-24 h-24 rounded-lg overflow-hidden"
+                >
+                  <Image
+                    src={src}
+                    alt="Preview"
+                    width={400}
+                    height={300}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+              {previews.length > 5 && (
+                <div className="w-24 h-24 bg-gray-300 flex items-center justify-center rounded-lg text-xl font-bold">
+                  +{previews.length - 5}
+                </div>
+              )}
+            </div>
+
+            <button
+              className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded mt-4"
+              onClick={handleCreateProject}
+            >
+              {editingProjectId ? "Update Project" : "Save Project"}
+            </button>
+          </Box>
+        </Modal>
+      </div>
     </>
   );
 }
