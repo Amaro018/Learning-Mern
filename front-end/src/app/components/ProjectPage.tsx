@@ -5,10 +5,12 @@ import * as ProjectsApi from "../network/notes_api";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { CircularProgress } from "@mui/material";
 
 export default function ProjectPage() {
   const router = useRouter();
   const [projects, setProjects] = useState<ProjectModel[]>([]);
+  const [loading, setLoading] = useState(true); // New state for loading
 
   useEffect(() => {
     async function loadProjects() {
@@ -17,6 +19,8 @@ export default function ProjectPage() {
         setProjects(data as ProjectModel[]);
       } catch (error) {
         console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false); // Stop loading once data is fetched
       }
     }
     loadProjects();
@@ -27,9 +31,19 @@ export default function ProjectPage() {
   };
 
   return (
-    <>
-      <div className="flex flex-wrap gap-4 p-4 justify-center">
-        {projects.map((project) =>
+    <div className="flex flex-wrap gap-4 p-4 justify-center">
+      {loading ? (
+        <div className="flex flex-col items-center justify-center w-full h-screen">
+          {/* Circular Progress Spinner */}
+          <CircularProgress size={60} thickness={4} />
+          {/* Centered Text */}
+          <p className="mt-4 text-lg font-semibold text-gray-500">
+            Fetching projects...
+          </p>
+        </div>
+      ) : (
+        // 🔥 **Actual Projects Rendering**
+        projects.map((project) =>
           project.images?.map((image, index) => (
             <motion.div
               key={`${project._id}-${index}`}
@@ -64,8 +78,8 @@ export default function ProjectPage() {
               </div>
             </motion.div>
           ))
-        )}
-      </div>
-    </>
+        )
+      )}
+    </div>
   );
 }
