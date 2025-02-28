@@ -3,7 +3,8 @@ import { Material, Project } from "../models/project";
 import { User } from "../models/user";
 
 async function fetchData(input: RequestInfo, init?: RequestInit) {
-  const response = await fetch(input, init);
+  console.log("env", process.env.API_PATH);
+  const response = await fetch(`${process.env.API_PATH}${input}`, init);
   console.log(response);
   if (response.ok) {
     return response;
