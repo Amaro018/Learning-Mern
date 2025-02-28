@@ -213,29 +213,22 @@ export async function updateProject(
     formData.append("images", image);
   });
 
-  const response = await fetch(`/api/projects/${projectId}`, {
-    method: "PATCH",
-    body: formData, // Browser auto-sets headers
-    credentials: "include",
-  });
+  const response = await api.patch(`/api/projects/${projectId}`, formData);
 
-  if (!response.ok) {
+  if (!response.status || response.status >= 400) {
     throw new Error(`Failed to update project: ${response.statusText}`);
   }
 
   console.log("Project updated successfully");
-  return await response.json();
+  return await response.data;
 }
 
 export async function getProject(projectId: string): Promise<Project> {
-  const response = await fetch(`/api/projects/${projectId}`, {
-    method: "GET",
-    credentials: "include",
-  });
+  const response = await api.get(`/api/projects/${projectId}`);
 
-  if (!response.ok) {
+  if (!response.status || response.status >= 400) {
     throw new Error(`Failed to fetch project: ${response.statusText}`);
   }
 
-  return await response.json();
+  return await response.data;
 }

@@ -1,57 +1,55 @@
 "use client";
-import Link from "next/link";
 import { useState } from "react";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import FolderCopyIcon from "@mui/icons-material/FolderCopy";
+import Link from "next/link";
+import HomeIcon from "@mui/icons-material/Home";
+import FolderIcon from "@mui/icons-material/Folder";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <aside
-      className={`${
-        isOpen ? "w-64" : "w-20"
-      } bg-gray-800 text-white min-h-screen p-5 transition-all duration-300 flex flex-col`}
+      className={`bg-gray-900 text-white min-h-screen p-4 flex flex-col fixed md:relative transition-all duration-300 z-50 ${
+        isOpen ? "w-64" : "w-16"
+      }`}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-white p-2 mb-4 hover:bg-gray-700 rounded w-full flex items-center gap-2"
+        className="text-white p-2 mb-4 hover:bg-gray-700 rounded flex items-center justify-center"
       >
-        <MenuIcon />
-        {isOpen && <span>Menu</span>}
+        {isOpen ? <CloseIcon /> : <MenuIcon />}
       </button>
 
       {/* Sidebar Navigation */}
-      <nav>
+      <nav className="flex-grow">
         <ul className="space-y-4">
           <li>
             <Link
               href="/"
-              className="flex items-center p-2 hover:bg-gray-700 rounded gap-2"
+              className="flex items-center p-2 hover:bg-gray-700 rounded"
             >
-              <ArrowBackIcon />
-              {isOpen && <span>Home</span>}
+              <HomeIcon /> {isOpen && <span className="ml-2">Home</span>}
             </Link>
           </li>
           <li>
             <Link
               href="/projects"
-              className="flex items-center p-2 hover:bg-gray-700 rounded gap-2"
+              className="flex items-center p-2 hover:bg-gray-700 rounded"
             >
-              <FolderCopyIcon />
-              {isOpen && <span>Projects</span>}
+              <FolderIcon /> {isOpen && <span className="ml-2">Projects</span>}
             </Link>
           </li>
           <li>
             <Link
               href="/account"
-              className="flex items-center p-2 hover:bg-gray-700 rounded gap-2"
+              className="flex items-center p-2 hover:bg-gray-700 rounded"
             >
-              <AccountCircleIcon />
-              {isOpen && <span>Account Info</span>}
+              <AccountCircleIcon />{" "}
+              {isOpen && <span className="ml-2">Account</span>}
             </Link>
           </li>
         </ul>
