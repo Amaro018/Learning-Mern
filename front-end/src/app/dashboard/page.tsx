@@ -9,6 +9,7 @@ import Projects from "./components/projects";
 
 export default function Dashboard() {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,7 +42,7 @@ export default function Dashboard() {
       </div>
     );
 
-  if (!currentUser) return null; // Prevents UI flicker before redirect
+  //   if (!currentUser) return null; // Prevents UI flicker before redirect
 
   return (
     <div className="flex min-h-screen bg-gray-100">
