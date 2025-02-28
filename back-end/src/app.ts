@@ -1,4 +1,3 @@
-import "dotenv/config";
 import express from "express";
 // import NoteModel from "./models/notes";
 import { Request, Response, NextFunction } from "express";
@@ -15,7 +14,7 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: validateEnv.CLIENT_URL,
+    origin: [validateEnv.CLIENT_URL, "http://localhost:3000"],
     credentials: true,
   })
 );
