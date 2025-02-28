@@ -14,7 +14,7 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: validateEnv.CLIENT_URL,
+    origin: `${validateEnv.CLIENT_URL}`,
     credentials: true,
   })
 );
