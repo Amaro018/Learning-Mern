@@ -13,18 +13,27 @@ import projectsRoutes from "./routes/projects";
 import cors from "cors";
 
 const app = express();
-
 app.use(
   cors({
     origin: validateEnv.CLIENT_URL,
     credentials: true,
   })
 );
-app.use(morgan("dev"));
 
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: false }));
+// app.use(
+//   session({
+//     secret: validateEnv.SESSION_SECRET,
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       maxAge: 30 * 24 * 60 * 60 * 1000,
+//     },
+//     rolling: true,
+//     store: MongoStore.create({
+//       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
+//     }),
+//   })
+// );
 
 app.use(
   session({
@@ -32,7 +41,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      secure: true, // Must be true if using HTTPS (Vercel & Render enforce HTTPS)
+      httpOnly: true,
+      sameSite: "none", // Required for cross-origin cookies
     },
     rolling: true,
     store: MongoStore.create({
@@ -40,6 +51,12 @@ app.use(
     }),
   })
 );
+
+app.use(morgan("dev"));
+
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
