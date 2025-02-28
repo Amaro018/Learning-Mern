@@ -24,7 +24,7 @@ export interface SignUpCredentials {
 }
 
 export async function getUser(): Promise<User> {
-  const response = await api.get("/api/users");
+  const response = await api.get("/api/users", { withCredentials: true });
   return response.data;
 }
 

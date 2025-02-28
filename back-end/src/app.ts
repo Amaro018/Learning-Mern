@@ -12,7 +12,12 @@ import projectsRoutes from "./routes/projects";
 import cors from "cors";
 
 const app = express();
-app.use(cors({ origin: "*", credentials: true }));
+app.use(
+  cors({
+    origin: validateEnv.CLIENT_URL,
+    credentials: true,
+  })
+);
 
 app.use(
   session({
