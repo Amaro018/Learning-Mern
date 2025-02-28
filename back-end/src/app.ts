@@ -20,30 +20,13 @@ app.use(
   })
 );
 
-// app.use(
-//   session({
-//     secret: validateEnv.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//       maxAge: 30 * 24 * 60 * 60 * 1000,
-//     },
-//     rolling: true,
-//     store: MongoStore.create({
-//       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
-//     }),
-//   })
-// );
-
 app.use(
   session({
     secret: validateEnv.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true, // Must be true if using HTTPS (Vercel & Render enforce HTTPS)
-      httpOnly: true,
-      sameSite: "none", // Required for cross-origin cookies
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     },
     rolling: true,
     store: MongoStore.create({
