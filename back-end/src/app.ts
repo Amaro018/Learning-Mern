@@ -25,7 +25,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      secure: process.env.NODE_ENV === 'production', // Only use Secure cookies in production (HTTPS)
+      sameSite: "none", // Allow cross-origin cookies
+      httpOnly: true, // Protect cookie from being accessed by JavaScript
     },
     rolling: true,
     store: MongoStore.create({
@@ -33,6 +36,7 @@ app.use(
     }),
   })
 );
+
 
 app.use(morgan("dev"));
 
