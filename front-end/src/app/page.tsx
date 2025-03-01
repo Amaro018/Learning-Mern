@@ -20,11 +20,13 @@ export default function Home() {
           console.log("Ignoring error when fetching user:", error);
         } finally {
           setLoading(false); // Stop loading once data is fetched
+          console.log(loading);
         }
       }
       fetchUser();
     }, []);
 
+    
   return (
     <div className="h-[calc(100vh-64px)] flex flex-col">
       {/* Navbar - Always Sticky */}
