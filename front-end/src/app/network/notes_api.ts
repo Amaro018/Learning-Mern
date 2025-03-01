@@ -23,7 +23,7 @@ export interface SignUpCredentials {
   password: string;
 }
 
-export async function getUser(): Promise<User> {
+export async function getAuthenticatedUser(): Promise<User> {
   const response = await api.get("/api/users", { withCredentials: true });
   return response.data;
 }

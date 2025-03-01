@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 
 
 export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
-    // const authenticatedUserId = req.session.userId;
+    const authenticatedUserId = req.session.userId;
     try {
         // if(!authenticatedUserId) {
         //     throw createHttpError(401, "User not authenticated");
@@ -14,7 +14,13 @@ export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
         // Find the user by the authenticated user id
         // select("+email") is used to include the 'email' field in the result
         // exec() is used to execute the query and return a promise
-        const user = await UserModel.findById(req.session.userId).select("+email").exec();
+        if (!authenticatedUserId) {
+            throw createHttpError(401, "User not authenticated");
+        }
+        const user = await UserModel.findById(authenticatedUserId).select("+email").exec();
+        if (!user) {
+            throw createHttpError(404, "User not found");
+        }
         res.status(200).json(user);
     } catch (error) {
         next(error);

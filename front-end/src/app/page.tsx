@@ -14,7 +14,7 @@ export default function Home() {
     useEffect(() => {
       async function fetchUser() {
         try {
-          const user = await notesApi.getUser();
+          const user = await notesApi.getAuthenticatedUser();
           setCurrentUser(user);
         } catch (error) {
           console.log("Ignoring error when fetching user:", error);

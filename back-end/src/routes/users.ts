@@ -1,10 +1,11 @@
 import express from "express";
 import * as userController from "../controllers/user";
+import { requiresAuth } from "../middleware/auth";
 // import { requiresAuth } from "../middleware/auth";
 
 const router = express.Router();
 
-router.get("/", userController.getAuthenticatedUser);
+router.get("/",requiresAuth, userController.getAuthenticatedUser);
 
 router.post("/signup", userController.signUp);
 
