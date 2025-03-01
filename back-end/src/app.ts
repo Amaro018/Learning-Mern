@@ -14,8 +14,8 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: validateEnv.CLIENT_URL, // Ensure this matches your frontend's deployed domain
-    credentials: true, // Required for sessions
+    origin: validateEnv.CLIENT_URL,
+    credentials: true,
   })
 );
 
@@ -25,10 +25,11 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      secure: process.env.NODE_ENV === 'production', // Only use Secure cookies in production (HTTPS)
-      sameSite: "none", // Allow cross-origin cookies
-      httpOnly: true, // Protect cookie from being accessed by JavaScript
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      sameSite: "lax",
+      secure: false,
+      httpOnly: true,
+      path: "/",
     },
     rolling: true,
     store: MongoStore.create({
@@ -36,7 +37,6 @@ app.use(
     }),
   })
 );
-
 
 app.use(morgan("dev"));
 
