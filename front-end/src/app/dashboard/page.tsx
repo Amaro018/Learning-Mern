@@ -18,7 +18,7 @@ export default function Dashboard() {
 
     async function fetchUser() {
       try {
-        const user = await userApi.getAuthenticatedUser();
+        const user = await userApi.getUser();
         if (isMounted) setCurrentUser(user);
       } catch (error) {
         console.error("Error fetching user:", error);

@@ -1,38 +1,13 @@
-"use client"
-import { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
 import ProfilePage from "./components/ProfilePage";
 import ProjectPage from "./components/ProjectPage";
-import * as notesApi from "./network/notes_api";
-import { User } from "./models/user";
 
 export default function Home() {
-
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-      async function fetchUser() {
-        try {
-          const user = await notesApi.getAuthenticatedUser();
-          setCurrentUser(user);
-        } catch (error) {
-          console.log("Ignoring error when fetching user:", error);
-        } finally {
-          setLoading(false); // Stop loading once data is fetched
-          console.log(loading);
-        }
-      }
-      fetchUser();
-    }, []);
-
-    
   return (
     <div className="h-[calc(100vh-64px)] flex flex-col">
       {/* Navbar - Always Sticky */}
       <div className="sticky top-0 z-50 w-full">
         <NavBar />
-        {currentUser?.email}
       </div>
 
       {/* Main Content */}

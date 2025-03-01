@@ -16,7 +16,7 @@ export default function NavBar() {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const user = await notesApi.getAuthenticatedUser();
+        const user = await notesApi.getUser();
         setCurrentUser(user);
       } catch (error) {
         console.log("Ignoring error when fetching user:", error);
