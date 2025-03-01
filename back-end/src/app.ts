@@ -25,10 +25,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Must be true for HTTPS
-      httpOnly: true, // Prevents client-side access to cookies
-      sameSite: "none", // Allows cross-origin cookies (important for Vercel + Render)
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     },
     rolling: true,
     store: MongoStore.create({
