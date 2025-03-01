@@ -16,7 +16,7 @@ export default function LoginForm() {
   useEffect(() => {
     async function checkSession() {
       try {
-        const user = await NotesApi.getUser();
+        const user = await NotesApi.getAuthenticatedUser();
         setCurrentUser(user);
       } catch (error) {
         console.log("No user logged in, displaying login form.", error);
