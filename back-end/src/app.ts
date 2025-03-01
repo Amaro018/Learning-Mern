@@ -27,7 +27,6 @@ app.use(
     cookie: {
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
-    rolling: true, // Ensures session stays alive with each request
     store: MongoStore.create({
       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
     }), // Store the session in MongoDB
