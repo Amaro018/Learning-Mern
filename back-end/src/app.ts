@@ -21,20 +21,16 @@ app.use(
 
 app.use(
   session({
-    secret: validateEnv.SESSION_SECRET,
+    secret: validateEnv.SESSION_SECRET, // Ensure this is set properly in your environment
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000,
-      sameSite: "none",
-      secure: true,
-      httpOnly: true,
-      path: "/",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     },
-    rolling: true,
+    rolling: true, // Ensures session stays alive with each request
     store: MongoStore.create({
       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
-    }),
+    }), // Store the session in MongoDB
   })
 );
 
