@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
 import ProfilePage from "./components/ProfilePage";
