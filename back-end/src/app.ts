@@ -36,8 +36,8 @@ app.use(
 app.use(
   session({
     secret: validateEnv.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
       httpOnly: true,
       secure: validateEnv.NODE_ENV === "production", // Ensure HTTPS in production
