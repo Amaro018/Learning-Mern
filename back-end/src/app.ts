@@ -19,17 +19,34 @@ app.use(
   })
 );
 
+// app.use(
+//   session({
+//     secret: validateEnv.SESSION_SECRET, // Ensure this is set properly in your environment
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+//     },
+//     store: MongoStore.create({
+//       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
+//     }), // Store the session in MongoDB
+//   })
+// );
+
 app.use(
   session({
-    secret: validateEnv.SESSION_SECRET, // Ensure this is set properly in your environment
+    secret: "your-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      httpOnly: true,
+      secure: validateEnv.NODE_ENV === "production", // Ensure HTTPS in production
+      sameSite: "none", // Allow cross-site cookies
     },
-    store: MongoStore.create({
+    store: new MongoStore({
       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
-    }), // Store the session in MongoDB
+      ttl: 14 * 24 * 60 * 60, // 14 days
+    }),
   })
 );
 
