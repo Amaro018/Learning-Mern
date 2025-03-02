@@ -33,6 +33,9 @@ app.use(
 //   })
 // );
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.use(
   session({
     secret: validateEnv.SESSION_SECRET,
@@ -50,19 +53,7 @@ app.use(
   })
 );
 
-app.use(function (req, res, next) {
-  console.log(req.session);
-  console.log("===========================");
-  console.log(req.session.userId);
-
-  console.log("THE TWO", res, next);
-});
-
 app.use(morgan("dev"));
-
-app.use(express.json());
-
-app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
