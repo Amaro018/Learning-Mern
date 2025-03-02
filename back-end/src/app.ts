@@ -50,6 +50,14 @@ app.use(
   })
 );
 
+app.use(function (req, res, next) {
+  console.log(req.session);
+  console.log("===========================");
+  console.log(req.session.userId);
+
+  console.log("THE TWO", res, next);
+});
+
 app.use(morgan("dev"));
 
 app.use(express.json());
