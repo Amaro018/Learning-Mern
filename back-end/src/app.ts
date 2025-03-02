@@ -43,7 +43,7 @@ app.use(
       secure: validateEnv.NODE_ENV === "production", // Ensure HTTPS in production
       sameSite: "none", // Allow cross-site cookies
     },
-    store: new MongoStore({
+    store: MongoStore.create({
       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
       ttl: 14 * 24 * 60 * 60, // 14 days
     }),
