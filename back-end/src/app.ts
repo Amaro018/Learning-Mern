@@ -41,7 +41,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: validateEnv.NODE_ENV === "production", // Ensure HTTPS in production
-      sameSite: "none", // Allow cross-site cookies
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
     store: MongoStore.create({
       mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
