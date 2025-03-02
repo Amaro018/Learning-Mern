@@ -35,7 +35,7 @@ app.use(
 
 app.use(
   session({
-    secret: "your-secret-key",
+    secret: validateEnv.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
