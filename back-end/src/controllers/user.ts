@@ -98,11 +98,21 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
       }
     );
 
+    // ✅ Set cookie in response
     res.cookie("jwt", token, {
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // 🔥 Must be true for HTTPS
+      sameSite: "none", // 🔥 Allows cross-site requests
+      path: "/", // 🔥 Cookie accessible everywhere
+      expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 🔥 7 days expiration
     });
 
-    res.status(200).json({ user, token });
+    res.status(200).json({
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      token, // Optional: You can also send it in response body
+    });
   } catch (error) {
     next(error);
   }
