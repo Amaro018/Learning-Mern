@@ -19,7 +19,7 @@ export const protect: RequestHandler = async (req, res, next) => {
       throw createHttpError(401, "User not found");
     }
 
-    req.userId = user._id.toString(); // Attach user to request object
+    req.user = user; // Attach full user object to request
     next();
   } catch (error) {
     next(createHttpError(401, "Invalid token", { cause: error }));
