@@ -6,7 +6,7 @@ import userRoutes from "./routes/users";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
 // import session from "express-session";
-import validateEnv from "./util/validateEnv";
+// import validateEnv from "./util/validateEnv";
 // import MongoStore from "connect-mongo";
 import projectsRoutes from "./routes/projects";
 import cors from "cors";
@@ -17,7 +17,7 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: validateEnv.CLIENT_URL,
+    origin: "https://archi-raphael-profile.vercel.app",
     credentials: true,
   })
 );

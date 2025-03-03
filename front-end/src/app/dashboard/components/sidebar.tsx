@@ -45,7 +45,7 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
-              href="/account"
+              href="/"
               className="flex items-center p-2 hover:bg-gray-700 rounded"
             >
               <AccountCircleIcon />{" "}
