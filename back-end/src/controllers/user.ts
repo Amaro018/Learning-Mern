@@ -100,8 +100,6 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
 
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "strict",
     });
 
     res.status(200).json({ user, token });
