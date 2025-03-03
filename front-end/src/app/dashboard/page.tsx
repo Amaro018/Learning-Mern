@@ -12,13 +12,15 @@ export default function Dashboard() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     async function fetchUser() {
       try {
         const user = await userApi.getUser();
         console.log("THE USER IM GETTING IS:", user);
-        if (!user) router.push("/login");
+        if (!user) {
+          router.push("/login");
+          return;
+        }
         setCurrentUser(user);
       } catch (error) {
         console.error("Error fetching user:", error);
