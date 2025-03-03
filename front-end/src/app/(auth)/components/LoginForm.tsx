@@ -37,6 +37,7 @@ export default function LoginForm() {
     e.preventDefault();
     try {
       const user = await NotesApi.login(form);
+
       console.log("User logged in successfully:", user);
       router.push("/dashboard");
     } catch (error) {
