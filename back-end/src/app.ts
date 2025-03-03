@@ -1,15 +1,17 @@
 import express from "express";
 // import NoteModel from "./models/notes";
 import { Request, Response, NextFunction } from "express";
-import notesRoutes from "./routes/notes";
+// import notesRoutes from "./routes/notes";
 import userRoutes from "./routes/users";
 import morgan from "morgan";
 import createHttpError, { isHttpError } from "http-errors";
-import session from "express-session";
+// import session from "express-session";
 import validateEnv from "./util/validateEnv";
-import MongoStore from "connect-mongo";
+// import MongoStore from "connect-mongo";
 import projectsRoutes from "./routes/projects";
 import cors from "cors";
+// import { generateToken } from "./util/generateToken";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(
@@ -35,32 +37,26 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-app.use(
-  session({
-    secret: validateEnv.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      httpOnly: true,
-      secure: validateEnv.NODE_ENV === "production", // Ensure HTTPS in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    },
-    store: MongoStore.create({
-      mongoUrl: validateEnv.MONGO_CONNECTION_STRING,
-      ttl: 14 * 24 * 60 * 60, // 14 days
-    }),
-  })
-);
+app.use(cookieParser());
 
 app.use(morgan("dev"));
+
+// app.use((req, res) => {
+//   const token = generateToken(req.user._id);
+//   res.cookie("jwt", token, {
+//     httpOnly: true, // Prevents access from JavaScript
+//     secure: process.env.NODE_ENV === "production", // HTTPS in production
+//     sameSite: "strict", // Protects against CSRF
+//     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days expiration
+//   });
+// });
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.use("/api/users", userRoutes);
-app.use("/api/notes", notesRoutes);
+// app.use("/api/notes", notesRoutes);
 app.use("/uploads", express.static("uploads")); // Serve images
 
 app.use("/api/projects", projectsRoutes);

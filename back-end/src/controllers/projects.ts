@@ -82,7 +82,7 @@ export const createProject: RequestHandler<
   console.log("Content-Typssse:", req.headers["content-type"]);
 
   try {
-    assertIsDefined(req.session.userId);
+    assertIsDefined(req.userId);
     const files = req.files as MulterFile[];
     const { title, description, materials } = req.body;
     console.log("Received body:", req.body);
@@ -100,7 +100,7 @@ export const createProject: RequestHandler<
       title,
       description,
       images: imageUrls,
-      userId: req.session.userId,
+      userId: req.userId,
       materials: parsedMaterials,
     });
 
@@ -126,7 +126,7 @@ export const updateProject: RequestHandler<
 > = async (req, res, next) => {
   console.log("Received body:", req.body);
   const { projectId } = req.body;
-  const authenticatedUserId = req.session.userId;
+  const authenticatedUserId = req.userId;
   try {
     assertIsDefined(authenticatedUserId);
     const project = await ProjectModel.findById(projectId).exec();
@@ -164,7 +164,7 @@ export const updateProject: RequestHandler<
 };
 
 export const deleteProject: RequestHandler = async (req, res, next) => {
-  const authenticatedUserId = req.session.userId;
+  const authenticatedUserId = req.userId;
   const { projectId } = req.params;
   try {
     assertIsDefined(authenticatedUserId);
@@ -178,7 +178,7 @@ export const deleteProject: RequestHandler = async (req, res, next) => {
       throw createHttpError(404, "Project not found");
     }
 
-    if (!project.userId.equals(req.session.userId)) {
+    if (!project.userId.equals(req.userId)) {
       throw createHttpError(403, "Unauthorized");
     }
 

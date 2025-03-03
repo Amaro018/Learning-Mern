@@ -1,142 +1,168 @@
 import { RequestHandler } from "express";
 import NoteModel from "../models/notes";
 import createHttpError from "http-errors";
-import mongoose from "mongoose";
-import { assertIsDefined } from "../util/assertIsDefined";
+// import mongoose from "mongoose";
+// import { assertIsDefined } from "../util/assertIsDefined";
+// import { UserDocument } from "../models/users";
+
+// interface DecodedToken {
+//   id: string;
+// }
+
+// export interface AuthenticatedRequest extends Request {
+//   user?: UserDocument;
+// }
 
 export const getNotes: RequestHandler = async (req, res, next) => {
-    // const authenticatedUserId = req.session.userId;
-    try {
-        // assertIsDefined(authenticatedUserId);
-        // const notes = await NoteModel.find({ userId: authenticatedUserId }).exec();
-        const notes = await NoteModel.find().exec();
-        res.status(200).json(notes);
-    } catch (error) {
-        next(error);
-    }    
+  try {
+    if (!req.userId) throw createHttpError(401, "User not authenticated");
+
+    const notes = await NoteModel.find({ userId: req.userId }).exec();
+    res.status(200).json(notes);
+  } catch (error) {
+    next(error);
+  }
 };
 
-export const getNote: RequestHandler = async (req, res, next) => {
-    const noteId = req.params.noteId;
-    const authenticatedUserId = req.session.userId;
+// export const getNote: RequestHandler = async (req, res, next) => {
+//   const noteId = req.params.noteId;
 
-    try {
-        assertIsDefined(authenticatedUserId);
-        if (!mongoose.isValidObjectId(noteId)) {
-            throw createHttpError(400, "Invalid note ID");
-        }
+//   const userId = req.userId;
 
-        const note = await NoteModel.findById(noteId).exec();
+//   try {
+//     if (!mongoose.isValidObjectId(noteId)) {
+//       throw createHttpError(400, "Invalid note ID");
+//     }
 
-        if (!note) {
-            throw createHttpError(404, "Note not found");
-        }
+//     const note = await NoteModel.findById(noteId).exec();
 
-        if (!note.userId.equals(authenticatedUserId)) {
-            throw createHttpError(403, "You do not have permission to access this note");
-        }
+//     if (!note) {
+//       throw createHttpError(404, "Note not found");
+//     }
 
-        res.status(200).json(note);
-    } catch (error) {
-        next(error);
-    }    
-};
+//     if (note.userId.toString() !== userId) {
+//       throw createHttpError(
+//         403,
+//         "You do not have permission to access this note"
+//       );
+//     }
 
-interface CreateNoteBody {
-    title: string;
-    description?: string;
-}
+//     res.status(200).json(note);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
-export const createNote: RequestHandler<unknown, unknown, CreateNoteBody> = async (req, res, next) => {
-    const authenticatedUserId = req.session.userId;
-    const { title, description } = req.body;
+// interface CreateNoteBody {
+//   title: string;
+//   description?: string;
+// }
 
-    try {
-        assertIsDefined(authenticatedUserId);
+// export const createNote: RequestHandler<
+//   unknown,
+//   unknown,
+//   CreateNoteBody
+// > = async (req, res, next) => {
+//   const authenticatedUserId = req.session.userId;
+//   const { title, description } = req.body;
 
-        if (!title) {
-            throw createHttpError(400, "Title is required");
-        }
+//   try {
+//     assertIsDefined(authenticatedUserId);
 
-        const newNote = await NoteModel.create({
-            title,
-            description,
-            userId: authenticatedUserId, // Assign userId to the note
-        });
+//     if (!title) {
+//       throw createHttpError(400, "Title is required");
+//     }
 
-        res.status(201).json(newNote);
-    } catch (error) {
-        next(error);
-    }    
-};
+//     const newNote = await NoteModel.create({
+//       title,
+//       description,
+//       userId: authenticatedUserId, // Assign userId to the note
+//     });
 
-interface UpdateNoteParams {
-    noteId: string;
-}
+//     res.status(201).json(newNote);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
-interface UpdateNoteBody {
-    title?: string;
-    description?: string;
-}
+// interface UpdateNoteParams {
+//   noteId: string;
+// }
 
-export const updateNote: RequestHandler<UpdateNoteParams, unknown, UpdateNoteBody, unknown> = async (req, res, next) => {
-    const authenticatedUserId = req.session.userId;
-    const { noteId } = req.params;
-    const { title, description } = req.body;
+// interface UpdateNoteBody {
+//   title?: string;
+//   description?: string;
+// }
 
-    try {
-        assertIsDefined(authenticatedUserId);
+// export const updateNote: RequestHandler<
+//   UpdateNoteParams,
+//   unknown,
+//   UpdateNoteBody,
+//   unknown
+// > = async (req, res, next) => {
+//   const authenticatedUserId = req.session.userId;
+//   const { noteId } = req.params;
+//   const { title, description } = req.body;
 
-        if (!mongoose.isValidObjectId(noteId)) {
-            throw createHttpError(400, "Invalid note ID");
-        }
+//   try {
+//     assertIsDefined(authenticatedUserId);
 
-        const note = await NoteModel.findById(noteId).exec();
+//     if (!mongoose.isValidObjectId(noteId)) {
+//       throw createHttpError(400, "Invalid note ID");
+//     }
 
-        if (!note) {
-            throw createHttpError(404, "Note not found");
-        }
+//     const note = await NoteModel.findById(noteId).exec();
 
-        if (!note.userId.equals(authenticatedUserId)) {
-            throw createHttpError(403, "You do not have permission to update this note");
-        }
+//     if (!note) {
+//       throw createHttpError(404, "Note not found");
+//     }
 
-        if (title !== undefined) note.title = title;
-        if (description !== undefined) note.description = description;
+//     if (!note.userId.equals(authenticatedUserId)) {
+//       throw createHttpError(
+//         403,
+//         "You do not have permission to update this note"
+//       );
+//     }
 
-        const updatedNote = await note.save();
+//     if (title !== undefined) note.title = title;
+//     if (description !== undefined) note.description = description;
 
-        res.status(200).json(updatedNote);
-    } catch (error) {
-        next(error);
-    }    
-};
+//     const updatedNote = await note.save();
 
-export const deleteNote: RequestHandler = async (req, res, next) => {
-    const authenticatedUserId = req.session.userId;
-    const { noteId } = req.params;
+//     res.status(200).json(updatedNote);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
-    try {
-        assertIsDefined(authenticatedUserId);
+// export const deleteNote: RequestHandler = async (req, res, next) => {
+//   const authenticatedUserId = req.session.userId;
+//   const { noteId } = req.params;
 
-        if (!mongoose.isValidObjectId(noteId)) {
-            throw createHttpError(400, "Invalid note ID");
-        }
+//   try {
+//     assertIsDefined(authenticatedUserId);
 
-        const note = await NoteModel.findById(noteId).exec();
+//     if (!mongoose.isValidObjectId(noteId)) {
+//       throw createHttpError(400, "Invalid note ID");
+//     }
 
-        if (!note) {
-            throw createHttpError(404, "Note not found");
-        }
+//     const note = await NoteModel.findById(noteId).exec();
 
-        if (!note.userId.equals(authenticatedUserId)) {
-            throw createHttpError(403, "You do not have permission to delete this note");
-        }
+//     if (!note) {
+//       throw createHttpError(404, "Note not found");
+//     }
 
-        await note.deleteOne();
+//     if (!note.userId.equals(authenticatedUserId)) {
+//       throw createHttpError(
+//         403,
+//         "You do not have permission to delete this note"
+//       );
+//     }
 
-        res.sendStatus(204);
-    } catch (error) {
-        next(error);
-    }
-};
+//     await note.deleteOne();
+
+//     res.sendStatus(204);
+//   } catch (error) {
+//     next(error);
+//   }
+// };

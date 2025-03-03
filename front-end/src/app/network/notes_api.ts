@@ -23,9 +23,14 @@ export interface SignUpCredentials {
   password: string;
 }
 
-export async function getUser(): Promise<User> {
-  const response = await api.get("/api/users", { withCredentials: true });
-  return response.data;
+export async function getUser(): Promise<User | null> {
+  try {
+    const response = await api.get("/api/users");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return null;
+  }
 }
 
 export async function signUp(credentials: SignUpCredentials): Promise<User> {

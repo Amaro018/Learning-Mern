@@ -1,7 +1,10 @@
-import mongoose from "mongoose";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import express from "express";
 
-declare module "express-session" {
-  interface SessionData {
-    userId: mongoose.Types.ObjectId;
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+    }
   }
 }

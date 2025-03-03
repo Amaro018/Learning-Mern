@@ -12,4 +12,5 @@ export default cleanEnv(process.env, {
   CLOUD_URL: url(),
   CLIENT_URL: url(),
   NODE_ENV: str(),
+  JWT_SECRET: str(),
 });
