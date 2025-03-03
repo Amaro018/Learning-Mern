@@ -24,7 +24,13 @@ export interface SignUpCredentials {
 }
 
 export async function getUser(): Promise<User | null> {
-  const response = await api.get("/api/users", { withCredentials: true });
+  const response = await api.get("/api/users", {
+    withCredentials: true,
+  });
+
+  console.log("🔍 Headers Sent:", response.config.headers);
+  console.log("🔍 Cookies Sent:", document.cookie);
+
   console.log("User fetched successfully:", response.data);
   return response.data;
 }
