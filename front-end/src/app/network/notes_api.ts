@@ -26,9 +26,10 @@ export interface SignUpCredentials {
 export async function getUser(): Promise<User | null> {
   try {
     const response = await api.get("/api/users");
+    console.log("User fetched successfully:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.log("Error fetching user:", error);
     return null;
   }
 }

@@ -23,17 +23,9 @@ import validateEnv from "../util/validateEnv";
 //   }
 // };
 
-export const getAuthenticatedUser: RequestHandler = async (req, res, next) => {
-  try {
-    if (!req.userId) throw createHttpError(401, "User not authenticated");
-
-    const user = await UserModel.findById(req.userId).select("+email").exec();
-    if (!user) throw createHttpError(404, "User not found");
-
-    res.status(200).json(user);
-  } catch (error) {
-    next(error);
-  }
+export const getAuthenticatedUser: RequestHandler = async (req, res) => {
+  const user = await UserModel.findById(req.userId).select("+email").exec();
+  res.status(200).json(user);
 };
 
 interface SignUpBody {

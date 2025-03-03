@@ -14,6 +14,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
+app.use(cookieParser());
 app.use(
   cors({
     origin: validateEnv.CLIENT_URL,
@@ -37,19 +38,8 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use(morgan("dev"));
-
-// app.use((req, res) => {
-//   const token = generateToken(req.user._id);
-//   res.cookie("jwt", token, {
-//     httpOnly: true, // Prevents access from JavaScript
-//     secure: process.env.NODE_ENV === "production", // HTTPS in production
-//     sameSite: "strict", // Protects against CSRF
-//     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days expiration
-//   });
-// });
 
 app.get("/", (req, res) => {
   res.send("Hello World!");

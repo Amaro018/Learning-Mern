@@ -8,7 +8,10 @@ import { TextField } from "@mui/material";
 import { User } from "@/app/models/user";
 
 export default function LoginForm() {
-  const [form, setForm] = useState<LoginCredentials>({ username: "", password: "" });
+  const [form, setForm] = useState<LoginCredentials>({
+    username: "",
+    password: "",
+  });
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -17,6 +20,7 @@ export default function LoginForm() {
     async function checkSession() {
       try {
         const user = await NotesApi.getUser();
+
         setCurrentUser(user);
       } catch (error) {
         console.log("No user logged in, displaying login form.", error);
@@ -45,12 +49,14 @@ export default function LoginForm() {
     router.push("/dashboard");
   }
 
-
   return (
     <>
       <NavBar />
       <div className="flex flex-col items-center justify-center bg-stone-300 min-h-screen px-4">
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-stone-200 p-6 rounded-lg w-full max-w-md sm:w-1/3">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 bg-stone-200 p-6 rounded-lg w-full max-w-md sm:w-1/3"
+        >
           <h1 className="text-2xl font-bold text-center">Admin Login</h1>
 
           <TextField
@@ -75,7 +81,10 @@ export default function LoginForm() {
 
           {error && <p className="text-red-500 text-center">{error}</p>}
 
-          <button type="submit" className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded w-full">
+          <button
+            type="submit"
+            className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded w-full"
+          >
             Login
           </button>
         </form>
@@ -83,4 +92,3 @@ export default function LoginForm() {
     </>
   );
 }
-

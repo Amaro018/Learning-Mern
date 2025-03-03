@@ -14,25 +14,20 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let isMounted = true; // To avoid state update after unmount
-
     async function fetchUser() {
       try {
         const user = await userApi.getUser();
-        if (isMounted) setCurrentUser(user);
+        console.log("THE USER IM GETTING IS:", user);
+        if (!user) router.push("/login");
+        setCurrentUser(user);
       } catch (error) {
         console.error("Error fetching user:", error);
-        if (isMounted) router.replace("/"); // Ensures redirection happens only when component is mounted
       } finally {
-        if (isMounted) setIsLoading(false);
+        setIsLoading(false); // Stop loading once data is fetched
       }
     }
 
     fetchUser();
-
-    return () => {
-      isMounted = false; // Cleanup function
-    };
   }, [router]);
 
   if (isLoading)
