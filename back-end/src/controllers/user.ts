@@ -119,6 +119,12 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
 };
 
 export const logout: RequestHandler = (req, res) => {
-  res.cookie("jwt", "", { httpOnly: true, expires: new Date(0) });
+  res.cookie("jwt", "", {
+    httpOnly: true,
+    secure: validateEnv.NODE_ENV === "production", // ✅ Secure for HTTPS, false for local
+    sameSite: validateEnv.NODE_ENV === "production" ? "none" : "lax", // ✅ Fix for Chrome
+    expires: new Date(0), // ✅ Expire immediately
+    path: "/", // ✅ Ensure it applies to the whole site
+  });
   res.status(200).json({ message: "Logout successful" });
 };
