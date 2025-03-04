@@ -101,8 +101,8 @@ export const login: RequestHandler<unknown, unknown, LoginBody> = async (
     // ✅ Set cookie in response
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // 🔥 Must be true for HTTPS
-      sameSite: "none", // 🔥 Allows cross-site requests
+      secure: process.env.NODE_ENV === "production" ? true : false, // 🔥 Must be true for HTTPS
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 🔥 Allows cross-site requests
       path: "/", // 🔥 Cookie accessible everywhere
       expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 🔥 7 days expiration
     });

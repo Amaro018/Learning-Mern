@@ -133,7 +133,9 @@ export const createProject = async (form: ProjectInput, images: File[]) => {
   images.forEach((image) => formData.append("images", image));
 
   try {
-    const response = await api.post("/api/projects", formData);
+    const response = await api.post("/api/projects", formData, {
+      withCredentials: true,
+    });
 
     if (!response.status || response.status >= 400) {
       throw new Error(`Error: ${response.status}`);
@@ -147,7 +149,7 @@ export const createProject = async (form: ProjectInput, images: File[]) => {
 };
 
 export async function deleteProject(projectId: string) {
-  await api.delete(`/api/projects/${projectId}`);
+  await api.delete(`/api/projects/${projectId}`, { withCredentials: true });
 }
 
 // frontend/api/updateProject.ts
@@ -222,7 +224,9 @@ export async function updateProject(
     formData.append("images", image);
   });
 
-  const response = await api.patch(`/api/projects/${projectId}`, formData);
+  const response = await api.patch(`/api/projects/${projectId}`, formData, {
+    withCredentials: true,
+  });
 
   if (!response.status || response.status >= 400) {
     throw new Error(`Failed to update project: ${response.statusText}`);
@@ -233,7 +237,9 @@ export async function updateProject(
 }
 
 export async function getProject(projectId: string): Promise<Project> {
-  const response = await api.get(`/api/projects/${projectId}`);
+  const response = await api.get(`/api/projects/${projectId}`, {
+    withCredentials: true,
+  });
 
   if (!response.status || response.status >= 400) {
     throw new Error(`Failed to fetch project: ${response.statusText}`);
