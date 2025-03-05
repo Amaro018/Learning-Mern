@@ -7,7 +7,6 @@ import { Box, Modal, Typography, TextField } from "@mui/material";
 import { DeleteForever } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "sonner";
-import { div } from "framer-motion/client";
 import { motion } from "framer-motion";
 
 const style = {
