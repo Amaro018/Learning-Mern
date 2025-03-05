@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { Box, Modal, Typography, TextField } from "@mui/material";
 import { DeleteForever } from "@mui/icons-material";
 import EditIcon from "@mui/icons-material/Edit";
+import { toast } from "sonner";
+import { div } from "framer-motion/client";
+import { motion } from "framer-motion";
 
 const style = {
   position: "absolute",
@@ -125,8 +128,10 @@ export default function Projects() {
             project._id === editingProjectId ? response : project
           )
         );
+        toast.success("successfully updated project!");
       } else {
         const response = await ProjectsApi.createProject(form, images);
+        toast.success("successfully added to projects!");
         setProjects([...projects, response]);
       }
       handleClose();
@@ -137,12 +142,49 @@ export default function Projects() {
   };
 
   const handleDeleteProject = async (projectId: string) => {
-    try {
-      await ProjectsApi.deleteProject(projectId);
-      setProjects(projects.filter((project) => project._id !== projectId));
-    } catch (error) {
-      console.error("Failed to delete project:", error);
-    }
+    toast(
+      <div className="flex flex-col items-center justify-center w-full">
+        <strong className="text-center">
+          Are you sure you want to delete this project?
+        </strong>
+        <p className="text-center">This action cannot be undone.</p>
+        <div className="flex gap-2">
+          <button
+            className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded"
+            onClick={async () => {
+              try {
+                await ProjectsApi.deleteProject(projectId);
+                setProjects((prevProjects) =>
+                  prevProjects.filter((project) => project._id !== projectId)
+                );
+                toast.dismiss(); // Close the toast after action
+                toast.success("Project successfully deleted!");
+              } catch (error) {
+                console.error("Failed to delete project:", error);
+                toast.error("Failed to delete project. Please try again.");
+              }
+            }}
+          >
+            Yes
+          </button>
+          <button
+            onClick={() => toast.dismiss()}
+            className="bg-red-500 py-2 px-4 rounded font-bold text-white"
+          >
+            No
+          </button>
+        </div>
+      </div>,
+      {
+        style: {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        duration: 5000,
+        position: "top-right", // Moves it to the center of the screen
+      }
+    );
   };
 
   useEffect(() => {
@@ -170,11 +212,15 @@ export default function Projects() {
       </div>
 
       {/* Responsive Grid Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center items-center ml-8 sm:ml-0">
         {projects.map((project) => (
-          <div
+          <motion.div
             key={project._id}
-            className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:scale-105"
+            initial={{ opacity: 0, scale: 0.9 }} // Animation on load
+            animate={{ opacity: 1, scale: 1 }} // Animation when visible
+            whileHover={{ scale: 1.05 }} // Scale on hover
+            transition={{ duration: 0.3 }} // Smooth transition
+            className="bg-white rounded-lg shadow-md overflow-hidden"
           >
             <div className="flex justify-end p-2">
               <button
@@ -202,7 +248,7 @@ export default function Projects() {
             <div className="p-4">
               <h2 className="text-lg font-semibold">{project.title}</h2>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 

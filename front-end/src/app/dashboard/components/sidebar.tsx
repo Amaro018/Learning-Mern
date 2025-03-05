@@ -21,7 +21,14 @@ export default function Sidebar() {
         onClick={() => setIsOpen(!isOpen)}
         className="text-white p-2 mb-4 hover:bg-gray-700 rounded flex items-center justify-center"
       >
-        {isOpen ? <CloseIcon /> : <MenuIcon />}
+        {isOpen ? (
+          <div className="flex items-center gap-2">
+            <p>Menu</p>
+            <CloseIcon />
+          </div>
+        ) : (
+          <MenuIcon />
+        )}
       </button>
 
       {/* Sidebar Navigation */}
