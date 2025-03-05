@@ -186,6 +186,7 @@ export default function Projects() {
     );
   };
 
+  /*************  ✨ Codeium Command 🌟  *************/
   useEffect(() => {
     async function loadProjects() {
       try {
@@ -197,6 +198,7 @@ export default function Projects() {
     }
     loadProjects();
   }, []);
+  /******  0da13c61-e77c-4294-ba02-a56f8672c51b  *******/
 
   return (
     <div className="min-h-screen p-4">
