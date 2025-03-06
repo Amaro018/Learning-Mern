@@ -201,7 +201,7 @@ export default function Projects() {
   /******  0da13c61-e77c-4294-ba02-a56f8672c51b  *******/
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen p-4 w-full">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">List of Projects</h1>
         <button

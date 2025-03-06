@@ -42,12 +42,14 @@ export default function Dashboard() {
   //   if (!currentUser) return null; // Prevents UI flicker before redirect
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 w-full">
       {/* Sidebar */}
+      <div>
       <Sidebar />
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 px-4 md:px-10 py-6 overflow-auto  md:ml-0 sm:ml-0 ml-10 justify-center">
+      <main className="flex-1 px-4 md:px-10 py-6 overflow-auto  md:ml-0 sm:ml-0 ml-10">
         <Projects />
       </main>
     </div>
