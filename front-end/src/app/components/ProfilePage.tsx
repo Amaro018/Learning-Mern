@@ -25,10 +25,11 @@ export default function ProfilePage() {
         <div className="text-center">
           <div className="flex flex-col gap-2">
             <p className="text-3xl sm:text-4xl font-bold">
-              Hi, I&apos;m {currentUser?.username}
+              Hi, I&apos;m {currentUser?.username || "John Doe"}
             </p>
             <p className="text-xl sm:text-2xl">
-              An architect based in Albay, Philippines
+              {currentUser?.userInformation?.about ||
+                "An architect based in Albay, Philippines"}
             </p>
           </div>
 

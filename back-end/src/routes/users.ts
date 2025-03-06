@@ -21,6 +21,7 @@ import {
   login,
   logout,
   signUp,
+  updateUserInformation,
 } from "../controllers/user";
 import { protect } from "../middleware/authMiddleware";
 
@@ -30,5 +31,6 @@ router.post("/signup", signUp);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/", protect, getAuthenticatedUser);
+router.put("/update/:userId", protect, updateUserInformation);
 
 export default router;

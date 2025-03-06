@@ -44,7 +44,7 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
-              href="/projects"
+              href="/dashboard/projects"
               className="flex items-center p-2 hover:bg-gray-700 rounded"
             >
               <FolderIcon /> {isOpen && <span className="ml-2">Projects</span>}
@@ -52,7 +52,7 @@ export default function Sidebar() {
           </li>
           <li>
             <Link
-              href="/"
+              href="/dashboard/account"
               className="flex items-center p-2 hover:bg-gray-700 rounded"
             >
               <AccountCircleIcon />{" "}

@@ -4,6 +4,7 @@ import UserModel from "../models/users";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import validateEnv from "../util/validateEnv";
+import { assertIsDefined } from "../util/assertIsDefined";
 
 export const getAuthenticatedUser: RequestHandler = async (req, res) => {
   res.status(200).json(req.user);
@@ -13,6 +14,16 @@ interface SignUpBody {
   username: string;
   email: string;
   password: string;
+  userInformation?: {
+    name?: string;
+    about?: string;
+    facebookUrl?: string;
+    instagramUrl?: string;
+    linkedinUrl?: string;
+    githubUrl?: string;
+    twitterUrl?: string;
+    imageUrl?: string;
+  };
 }
 
 export const signUp: RequestHandler<unknown, unknown, SignUpBody> = async (
@@ -20,7 +31,7 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody> = async (
   res,
   next
 ) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, userInformation } = req.body;
 
   try {
     if (!username || !email || !password) {
@@ -42,6 +53,7 @@ export const signUp: RequestHandler<unknown, unknown, SignUpBody> = async (
       username,
       email,
       password: passwordHashed,
+      userInformation: userInformation || null,
     });
 
     // Generate JWT Token
@@ -127,4 +139,72 @@ export const logout: RequestHandler = (req, res) => {
     path: "/", // ✅ Ensure it applies to the whole site
   });
   res.status(200).json({ message: "Logout successful" });
+};
+
+interface UpdateUserInformationBody {
+  name?: string;
+  about?: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
+  githubUrl?: string;
+  twitterUrl?: string;
+  imageUrl?: string;
+}
+
+export const updateUserInformation: RequestHandler<
+  { userId: string }, // Params
+  unknown, // Response body (we don't explicitly define it)
+  UpdateUserInformationBody // Request body
+> = async (req, res, next) => {
+  try {
+    const authenticatedUserId = req.user?._id; // Ensure req.user exists
+    if (!authenticatedUserId) {
+      throw createHttpError(401, "Unauthorized");
+    }
+
+    const { userId } = req.params; // Extract userId from URL params
+    const {
+      name,
+      about,
+      facebookUrl,
+      instagramUrl,
+      linkedinUrl,
+      githubUrl,
+      twitterUrl,
+      imageUrl,
+    } = req.body; // Extract user updates
+
+    if (authenticatedUserId.toString() !== userId) {
+      throw createHttpError(
+        403,
+        "Forbidden: You can only update your own information"
+      );
+    }
+
+    // Find user by ID
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw createHttpError(404, "User not found");
+    }
+
+    // Update userInformation
+    user.userInformation = {
+      ...user.userInformation,
+      name: name ?? user.userInformation?.name,
+      about: about ?? user.userInformation?.about,
+      facebookUrl: facebookUrl ?? user.userInformation?.facebookUrl,
+      instagramUrl: instagramUrl ?? user.userInformation?.instagramUrl,
+      linkedinUrl: linkedinUrl ?? user.userInformation?.linkedinUrl,
+      githubUrl: githubUrl ?? user.userInformation?.githubUrl,
+      twitterUrl: twitterUrl ?? user.userInformation?.twitterUrl,
+      imageUrl: imageUrl ?? user.userInformation?.imageUrl,
+    };
+
+    await user.save();
+
+    res.status(200).json({ message: "User information updated", user });
+  } catch (error) {
+    next(error); // Pass error to middleware
+  }
 };
