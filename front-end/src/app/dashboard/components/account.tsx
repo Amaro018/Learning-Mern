@@ -3,7 +3,7 @@
 import { useUser } from "../../context/UserContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import { TextField, Button, Avatar } from "@mui/material";
 
 export default function EditUserPage() {
