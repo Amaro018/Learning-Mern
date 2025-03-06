@@ -7,7 +7,7 @@ import { useUser } from "../context/UserContext";
 export default function ProfilePage() {
   const { currentUser } = useUser();
   return (
-    <div className="flex flex-col items-center justify-center bg-slate-300 h-full ">
+    <div className="flex flex-col items-center justify-center h-full py-8 overflow-hidden">
       <div className="flex flex-col items-center justify-center gap-8">
         {/* Profile Image */}
         <div className="">
@@ -17,7 +17,7 @@ export default function ProfilePage() {
             width={300}
             height={100}
             priority
-            className="rounded-lg w-full h-auto"
+            className="rounded-lg w-full h-auto shadow-xl"
           />
         </div>
 

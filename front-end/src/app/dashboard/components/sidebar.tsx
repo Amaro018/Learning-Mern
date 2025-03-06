@@ -11,6 +11,9 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
+    <div className={`fixed top-0 left-0 h-full shadow-md bg-gray-900 transition-all duration-300 ${
+        isOpen ? "w-64" : "w-16"
+      }`}>
     <aside
       className={`bg-gray-900 text-white min-h-screen p-4 flex flex-col fixed md:relative transition-all duration-300 z-50 ${
         isOpen ? "w-64" : "w-16"
@@ -62,5 +65,6 @@ export default function Sidebar() {
         </ul>
       </nav>
     </aside>
+    </div>
   );
 }

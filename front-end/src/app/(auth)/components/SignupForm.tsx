@@ -30,8 +30,10 @@ export default function SignUpForm() {
 
   return (
     <>
-      <NavBar />
       <div className="flex flex-col items-center justify-center bg-stone-300 min-h-screen px-4">
+      <div className="absolute top-0 w-full">
+      <NavBar />
+      </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 bg-stone-200 p-6 rounded-lg w-full max-w-md sm:w-1/3">
           <h1 className="text-2xl font-bold text-center">Sign Up</h1>
 
@@ -67,7 +69,7 @@ export default function SignUpForm() {
 
           {error && <p className="text-red-500 text-center">{error}</p>}
 
-          <button type="submit" className="bg-stone-500 hover:bg-stone-700 text-white font-bold py-2 px-4 rounded w-full">
+          <button type="submit" className="bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded w-full">
             Sign Up
           </button>
         </form>
