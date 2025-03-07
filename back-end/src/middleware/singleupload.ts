@@ -12,13 +12,9 @@ cloudinary.config({
 // Cloudinary storage for Multer
 const storage = new CloudinaryStorage({
   cloudinary,
-  /*************  ✨ Codeium Command ⭐  *************/
-  /******  90e6674a-e464-4889-911c-27ff65886fc9  *******/ params: async (
-    req,
-    file
-  ) => {
+  params: async (req, file) => {
     return {
-      folder: "projects", // Folder in Cloudinary
+      folder: "profile", // Folder in Cloudinary
       format: file.mimetype.split("/")[1], // Extract file format
       public_id: `${file.fieldname}-${Date.now()}`, // Unique file name
     };
@@ -39,6 +35,6 @@ const fileFilter = (
 };
 
 // Initialize Multer with Cloudinary storage
-const upload = multer({ storage, fileFilter });
+const profileupload = multer({ storage, fileFilter }).single("image");
 
-export default upload;
+export default profileupload;

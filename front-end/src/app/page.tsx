@@ -20,7 +20,7 @@ export default function Home() {
           </aside>
 
           {/* Projects Section - Scrollable */}
-          <main className="w-full md:w-2/3 h-screen overflow-y-auto p-4">
+          <main className="w-full md:w-2/3 h-screen overflow-y-auto p-4 scrollbar-hide">
             <ProjectPage />
           </main>
         </div>

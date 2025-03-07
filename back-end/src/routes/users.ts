@@ -1,20 +1,3 @@
-// import express from "express";
-// import * as userController from "../controllers/user";
-// import { requiresAuth } from "../middleware/auth";
-// // import { requiresAuth } from "../middleware/auth";
-
-// const router = express.Router();
-
-// router.get("/",requiresAuth, userController.getAuthenticatedUser);
-
-// router.post("/signup", userController.signUp);
-
-// router.post("/login", userController.login);
-
-// router.post("/logout", userController.logout);
-
-// export default router;
-
 import express from "express";
 import {
   getAuthenticatedUser,
@@ -24,6 +7,7 @@ import {
   updateUserInformation,
 } from "../controllers/user";
 import { protect } from "../middleware/authMiddleware";
+import profileupload from "../middleware/singleupload";
 
 const router = express.Router();
 
@@ -31,6 +15,7 @@ router.post("/signup", signUp);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/", protect, getAuthenticatedUser);
-router.put("/update/:userId", protect, updateUserInformation);
+
+router.put("/update/:userId", protect, profileupload, updateUserInformation);
 
 export default router;

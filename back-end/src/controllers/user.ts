@@ -153,17 +153,26 @@ interface UpdateUserInformationBody {
 }
 
 export const updateUserInformation: RequestHandler<
-  { userId: string }, // Params
-  unknown, // Response body (we don't explicitly define it)
-  UpdateUserInformationBody // Request body
+  unknown,
+  unknown,
+  UpdateUserInformationBody
 > = async (req, res, next) => {
+  console.log("Received body:", req.body);
+  const authenticatedUserId = req.user?._id; // Ensure this is defined
+
   try {
-    const authenticatedUserId = req.user?._id; // Ensure req.user exists
-    if (!authenticatedUserId) {
-      throw createHttpError(401, "Unauthorized");
+    assertIsDefined(authenticatedUserId);
+
+    const user = await UserModel.findById(authenticatedUserId).exec();
+    if (!user) {
+      throw createHttpError(404, "User not found");
     }
 
-    const { userId } = req.params; // Extract userId from URL params
+    // Ensure userInformation exists
+    if (!user.userInformation) {
+      user.userInformation = {}; // Initialize if missing
+    }
+
     const {
       name,
       about,
@@ -172,39 +181,26 @@ export const updateUserInformation: RequestHandler<
       linkedinUrl,
       githubUrl,
       twitterUrl,
-      imageUrl,
-    } = req.body; // Extract user updates
+    } = req.body;
 
-    if (authenticatedUserId.toString() !== userId) {
-      throw createHttpError(
-        403,
-        "Forbidden: You can only update your own information"
-      );
+    // Ensure req.file is a single image
+    const image = req.file as Express.Multer.File | undefined;
+
+    // Update fields only if they exist in the request body
+    if (name) user.userInformation.name = name;
+    if (about) user.userInformation.about = about;
+    if (facebookUrl) user.userInformation.facebookUrl = facebookUrl;
+    if (instagramUrl) user.userInformation.instagramUrl = instagramUrl;
+    if (linkedinUrl) user.userInformation.linkedinUrl = linkedinUrl;
+    if (githubUrl) user.userInformation.githubUrl = githubUrl;
+    if (twitterUrl) user.userInformation.twitterUrl = twitterUrl;
+    if (image) {
+      user.userInformation.imageUrl = image.path;
     }
 
-    // Find user by ID
-    const user = await UserModel.findById(userId);
-    if (!user) {
-      throw createHttpError(404, "User not found");
-    }
-
-    // Update userInformation
-    user.userInformation = {
-      ...user.userInformation,
-      name: name ?? user.userInformation?.name,
-      about: about ?? user.userInformation?.about,
-      facebookUrl: facebookUrl ?? user.userInformation?.facebookUrl,
-      instagramUrl: instagramUrl ?? user.userInformation?.instagramUrl,
-      linkedinUrl: linkedinUrl ?? user.userInformation?.linkedinUrl,
-      githubUrl: githubUrl ?? user.userInformation?.githubUrl,
-      twitterUrl: twitterUrl ?? user.userInformation?.twitterUrl,
-      imageUrl: imageUrl ?? user.userInformation?.imageUrl,
-    };
-
-    await user.save();
-
-    res.status(200).json({ message: "User information updated", user });
+    const updatedUser = await user.save();
+    res.status(200).json(updatedUser);
   } catch (error) {
-    next(error); // Pass error to middleware
+    next(error);
   }
 };

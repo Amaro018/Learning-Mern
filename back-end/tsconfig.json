@@ -114,5 +114,6 @@
   },
   "ts-node": {
     "files": true
-  }
+  },
+  "include": ["src/**/*.ts"]
 }

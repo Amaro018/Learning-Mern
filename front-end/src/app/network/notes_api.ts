@@ -57,6 +57,27 @@ export async function logout() {
 }
 //LOGIN & SIGNUP
 
+export async function updateUserInformation(
+  userId: string,
+  formData: FormData
+): Promise<User> {
+  console.log("Updating user with formData:", formData);
+
+  const response = await api.put(`/api/users/update/${userId}`, formData, {
+    withCredentials: true,
+    headers: {
+      "Content-Type": "multipart/form-data", // Ensure Multer processes the file correctly
+    },
+  });
+
+  if (!response.status || response.status >= 400) {
+    throw new Error(`Failed to update User: ${response.statusText}`);
+  }
+
+  console.log("User updated successfully");
+  return response.data;
+}
+
 export async function fetchNotes(): Promise<Note[]> {
   const response = await api.get("/api/notes");
   return response.data;
