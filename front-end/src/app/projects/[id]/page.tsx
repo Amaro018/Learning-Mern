@@ -9,7 +9,11 @@ import { Box, IconButton } from "@mui/material";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
+import { useRouter } from "next/navigation";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 export default function ProjectDetails() {
+  const router = useRouter();
   const { id } = useParams();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
@@ -45,9 +49,17 @@ export default function ProjectDetails() {
 
   return (
     <div className=" mx-auto p-6    w-full">
-      <h1 className="text-4xl font-extrabold text-gray-800 mb-6 text-center">
-        {project.title}
-      </h1>
+      <div className="flex flex-start items-center gap-4">
+        <button
+          className="text-slate-700 dark:text-white font-bold"
+          onClick={() => router.back()}
+        >
+          <ArrowBackIcon sx={{ fontSize: "2.5rem" }} />
+        </button>
+        <h1 className="text-4xl font-extrabold text-gray-800 dark:text-white text-center">
+          {project.title}
+        </h1>
+      </div>
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Image Carousel Section */}
