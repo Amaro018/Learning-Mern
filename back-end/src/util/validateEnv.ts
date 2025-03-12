@@ -13,4 +13,6 @@ export default cleanEnv(process.env, {
   CLIENT_URL: url(),
   NODE_ENV: str(),
   JWT_SECRET: str(),
+  EMAIL_USER: str(),
+  EMAIL_PASS: str(),
 });

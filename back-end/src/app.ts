@@ -12,6 +12,7 @@ import projectsRoutes from "./routes/projects";
 import cors from "cors";
 // import { generateToken } from "./util/generateToken";
 import cookieParser from "cookie-parser";
+import emailRoute from "./routes/email";
 
 const app = express();
 app.use(cookieParser());
@@ -36,6 +37,7 @@ app.use("/api/users", userRoutes);
 app.use("/uploads", express.static("uploads")); // Serve images
 
 app.use("/api/projects", projectsRoutes);
+app.use("/api/email", emailRoute);
 
 app.use((req, res, next) => {
   next(createHttpError(404, "END POINT NOT FOUND"));

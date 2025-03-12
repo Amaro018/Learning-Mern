@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import * as notesApi from "../../network/notes_api";
 import { useRouter } from "next/navigation";
+import ExitToAppRoundedIcon from "@mui/icons-material/ExitToAppRounded";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
@@ -73,7 +74,7 @@ export default function Sidebar() {
           </li>
           <li className="flex items-center p-2 hover:bg-gray-700 rounded">
             <button onClick={handleLogout}>
-              <AccountCircleIcon />
+              <ExitToAppRoundedIcon className="transform rotate-180" />
               {isOpen && <span className="ml-2">Logout</span>}
             </button>
           </li>

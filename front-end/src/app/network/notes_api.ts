@@ -268,3 +268,12 @@ export async function getProject(projectId: string): Promise<Project> {
 
   return await response.data;
 }
+
+export async function sendEmail(name: string, from: string, message: string) {
+  const response = await api.post("/api/email/send-email", {
+    name,
+    from,
+    message,
+  });
+  return response.data;
+}
