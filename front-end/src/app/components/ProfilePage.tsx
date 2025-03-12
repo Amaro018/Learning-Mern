@@ -4,9 +4,12 @@ import FacebookRoundedIcon from "@mui/icons-material/FacebookRounded";
 import XIcon from "@mui/icons-material/X";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import { useUser } from "../context/UserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Modal, TextField } from "@mui/material";
 import * as userApi from "../network/notes_api";
+import { motion } from "framer-motion";
+import { User } from "../models/user";
+import Link from "next/link";
 const style = {
   position: "absolute",
   top: "50%",
@@ -15,18 +18,40 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   border: "2px solid #000",
+  borderRadius: 5,
   boxShadow: 24,
   p: 4,
 };
 
 export default function ProfilePage() {
-  const { currentUser } = useUser();
+  // const { currentUser } = useUser();
 
   const [isOpen, setIsOpen] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    async function loadFirstUser() {
+      try {
+        const users = await userApi.getAllUser();
+
+        if (Array.isArray(users) && users.length > 0) {
+          setCurrentUser(users[0]); // Set the first user safely
+        } else {
+          setCurrentUser(null); // Handle case where users is empty
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setCurrentUser(null); // Ensure state is set to null on failure
+      }
+    }
+
+    loadFirstUser();
+  }, []);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -50,8 +75,11 @@ export default function ProfilePage() {
         {/* Profile Image */}
         <div className="">
           <Image
-            src="/istockphoto-1682296067-612x612.jpg"
-            alt="Profile"
+            src={
+              currentUser?.userInformation?.imageUrl ||
+              "/istockphoto-1682296067-612x612.jpg"
+            }
+            alt={"Profile"}
             width={300}
             height={100}
             priority
@@ -60,7 +88,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Text Content */}
-        <div className="text-center">
+        <div className="text-center dark:text-slate-800">
           <div className="flex flex-col gap-2">
             <p className="text-3xl sm:text-4xl font-bold">
               Hi, I&apos;m {currentUser?.username || "John Doe"}
@@ -74,41 +102,62 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-2 justify-center mt-4">
             <div>
               <button>
-                <XIcon
-                  sx={{
-                    fontSize: 40,
-                    color: "blue",
-                    "&:hover": { color: "darkblue" },
-                  }}
-                />
+                <Link
+                  href={currentUser?.userInformation?.twitterUrl || "#"}
+                  target="_blank"
+                >
+                  <XIcon
+                    sx={{
+                      fontSize: 40,
+                      color: "blue",
+                      "&:hover": { color: "darkblue" },
+                    }}
+                  />
+                </Link>
               </button>
               <button>
-                <InstagramIcon
-                  sx={{
-                    fontSize: 40,
-                    color: "blue",
-                    "&:hover": { color: "darkblue" },
-                  }}
-                />
+                <Link
+                  href={currentUser?.userInformation?.instagramUrl || "#"}
+                  target="_blank"
+                >
+                  <InstagramIcon
+                    sx={{
+                      fontSize: 40,
+                      color: "blue",
+                      "&:hover": { color: "darkblue" },
+                    }}
+                  />
+                </Link>
               </button>
               <button>
-                <FacebookRoundedIcon
-                  sx={{
-                    fontSize: 40,
-                    color: "blue",
-                    "&:hover": { color: "darkblue" },
-                  }}
-                />
+                <Link
+                  href={currentUser?.userInformation?.facebookUrl || "#"}
+                  target="_blank"
+                >
+                  <FacebookRoundedIcon
+                    sx={{
+                      fontSize: 40,
+                      color: "blue",
+                      "&:hover": { color: "darkblue" },
+                    }}
+                  />
+                </Link>
               </button>
             </div>
 
             <div>
-              <button
+              <motion.button
                 className="bg-slate-700 text-white p-4 rounded-xl hover:bg-slate-800"
                 onClick={() => setIsOpen(true)}
+                animate={{ x: [0, -2, 2, -2, 2, 0] }}
+                transition={{
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 1.5,
+                }}
               >
                 contact me
-              </button>
+              </motion.button>
             </div>
             <Modal
               open={isOpen}

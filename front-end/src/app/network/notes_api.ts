@@ -35,6 +35,11 @@ export async function getUser(): Promise<User | null> {
   return response.data;
 }
 
+export async function getAllUser(): Promise<User | null> {
+  const response = await api.get("/api/users/all");
+  return response.data;
+}
+
 export async function signUp(credentials: SignUpCredentials): Promise<User> {
   const response = await api.post("/api/users/signup", credentials);
   return response.data;
@@ -173,58 +178,6 @@ export async function deleteProject(projectId: string) {
   await api.delete(`/api/projects/${projectId}`, { withCredentials: true });
 }
 
-// frontend/api/updateProject.ts
-
-// export async function updateProject(projectId: string, form: ProjectInput, images: File[]): Promise<Project> {
-
-//     console.log("Updating project with form:", form);
-
-//     const formData = new FormData();
-//     // Append text fields
-//     formData.append("title", form.title);
-//     if (form.description) formData.append("description", form.description);
-//     if (form.materials) formData.append("materials", JSON.stringify(form.materials));
-
-//     // Append images
-//     images.forEach((image) => formData.append("images", image));
-
-//     // if (form.materials) formData.append("materials", JSON.stringify(form.materials));
-
-//     // // Append new images if they are files
-//     // form.images.forEach((image) => {
-//     //     if (image instanceof File) {
-//     //         formData.append("files", image);
-//     //     }
-//     // });
-
-//     // // Append existing image URLs separately (backend should handle this properly)
-//     // const existingImages = form.images.filter(img => !(img instanceof File));
-//     // if (existingImages.length > 0) {
-//     //     formData.append("existingImages", JSON.stringify(existingImages));
-//     // }
-
-//     // // ✅ Correctly log FormData contents
-//     // console.log("FormData contents:");
-//     // for (const [key, value] of formData.entries()) {
-//     //     console.log(key, value);
-//     // }
-
-//     // await fetchData(`/api/notes/${noteId}`, {method: "PATCH", body: JSON.stringify(note), headers: {"Content-Type": "application/json"}})
-
-//     const response = await fetchData(`/api/projects/${projectId}`, {
-//         method: "PATCH",
-//         body: formData,
-//         headers: {"Content-Type": "multipart/form-data"},
-//         credentials: "include",
-//     });
-
-//     if (!response.ok) {
-//         throw new Error(`Failed to update project: ${response.statusText}`);
-//     }
-
-//     console.log("Project updated successfully");
-//     return await response.json();
-// }
 export async function updateProject(
   projectId: string,
   form: ProjectInput,

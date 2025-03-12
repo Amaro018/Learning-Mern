@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Typography,
 } from "@mui/material";
+import { toast } from "sonner";
 
 export default function EditUserPage() {
   const { currentUser } = useUser();
@@ -87,7 +88,8 @@ export default function EditUserPage() {
 
       // ✅ Send userId & formData (including image) to backend
       await UsersApi.updateUserInformation(userId, formDataToSend);
-      setIsLoading(false);
+      toast.success("updated successfully");
+      setIsLoading(true);
     } catch (error) {
       console.error("Error updating user:", error);
     } finally {
@@ -208,7 +210,7 @@ export default function EditUserPage() {
 
         {/* Submit Button */}
         <Button type="submit" variant="contained" color="primary" fullWidth>
-          Save Changes
+          {isLoading ? "saving" : "save"}
         </Button>
       </form>
     </div>

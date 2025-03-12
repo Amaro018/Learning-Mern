@@ -26,6 +26,10 @@ interface SignUpBody {
   };
 }
 
+export const getAllUser: RequestHandler = async (req, res) => {
+  res.status(200).json(await UserModel.find().exec());
+};
+
 export const signUp: RequestHandler<unknown, unknown, SignUpBody> = async (
   req,
   res,

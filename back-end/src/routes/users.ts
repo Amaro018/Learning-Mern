@@ -5,6 +5,7 @@ import {
   logout,
   signUp,
   updateUserInformation,
+  getAllUser,
 } from "../controllers/user";
 import { protect } from "../middleware/authMiddleware";
 import profileupload from "../middleware/singleupload";
@@ -15,6 +16,7 @@ router.post("/signup", signUp);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/", protect, getAuthenticatedUser);
+router.get("/all", getAllUser);
 
 router.put("/update/:userId", protect, profileupload, updateUserInformation);
 
